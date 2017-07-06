@@ -16,10 +16,11 @@ String.prototype.compile = function (obj) {
 	$.fn.smartVideo = function (options) {
 		var o = Object.assign({
 				autoSize: true,
-				chapters: [],
-				onPlay: false,
-				onPause: false,
-				onComplete: false,
+				chapters: [], //array of objects structured like {seconds: CUE POINT, title: CHAPTER TITLE, description: CHAPTER DESCRIPTION, thumbnail: THUMBNAIL. SCREEN CAP USED IF NOT PROVIDED}
+				onPlay: false, //callback for play event
+				onPause: false, //callback for pause event
+				onComplete: false, //callback for complete event
+				mode: 'embed', //can be embed | fullscreen
 			}, options),
 			_this = this,
 			video = _this[0],
@@ -29,7 +30,7 @@ String.prototype.compile = function (obj) {
 				ready: false,
 				init: function () {
 					//make this a smart video
-					_this.wrap("<div class='smart-video'></div>");
+					_this.wrap("<div class='smart-video {mode}'></div>".compile({ mode: o.mode }));
 
 					//set new wrapper as 'container'
 					container = _this.closest(".smart-video");
@@ -53,12 +54,15 @@ String.prototype.compile = function (obj) {
 					}
 
 					_this.after("<div class='control-bar'> <div class='controls'> <a class='fa fa-play'></a> <a class='fa fa-pause hide'></a> </div> <div class='progress'> <div class='inner'></div> </div> <div class='clearfix'></div> </div>");
+					_this.after("<div class='chapter-menu'></div>");
+
 
 					ele = {
 						play: container.find(".fa-play"),
 						pause: container.find(".fa-pause"),
 						progressBar: container.find(".progress"),
-						progress: container.find(".progress .inner")
+						progress: container.find(".progress .inner"),
+						chapterMenu: container.find(".chapter-menu")
 					};
 
 					ops.binds();
@@ -103,8 +107,13 @@ String.prototype.compile = function (obj) {
 								duration = video.duration,
 								pct = Math.floor((chapter.seconds / duration) * 100);
 
+							ele.chapterMenu.append("<a class='chapter' href='#'></a>");
+
+							var chapterMenuEntry = ele.chapterMenu.find(".chapter").eq(-1);
+
 							ops.getFrame(chapter.seconds, function (thumbnail) {
 								ele.progressBar.append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
+								chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='details'><h2>{title}</h2><p>{desc}</p></div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
 							});
 						});
 
@@ -165,6 +174,21 @@ String.prototype.compile = function (obj) {
 
 						video.currentTime = vidTime;
 					});
+
+					//chapter menu selection
+					$("body").on("click", ".chapter-menu > a.chapter", function (e) {
+						e.preventDefault();
+
+						console.log("Click!");
+
+						var ele = $(this),
+							seconds = ele.data("seconds"),
+							container = ele.closest(".smart-video"),
+							video = container.find("video")[0];
+
+						video.currentTime = seconds;
+						video.play();
+					});
 				},
 
 				getFrame: function (time, cb) {
@@ -211,9 +235,14 @@ $(function () {
 	$("video").smartVideo({
 		autoPlay: true,
 		chapters: [{
-			seconds: 5
+			seconds: 5,
+			title: "Chapter 1",
+			description: "Look at the pretty colors!"
 		}, {
-			seconds: 27
-		}]
+			seconds: 27,
+			title: "Title Screen",
+			description: "This is where the title finally shows up."
+		}],
+		mode: "fullscreen"
 	});
 });

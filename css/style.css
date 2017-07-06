@@ -562,8 +562,61 @@ html {
 .smart-video .control-bar .progress .chapter.active .preview, .smart-video .control-bar .progress .chapter:hover .preview {
   display: block;
 }
+/* line 112, ../assets/scss/_base.scss */
+.smart-video .chapter-menu {
+  display: none;
+}
+/* line 117, ../assets/scss/_base.scss */
+.smart-video.fullscreen .control-bar {
+  position: absolute;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  width: 100%;
+}
+/* line 124, ../assets/scss/_base.scss */
+.smart-video.fullscreen .control-bar:hover {
+  opacity: 0.75;
+}
+/* line 129, ../assets/scss/_base.scss */
+.smart-video.fullscreen .chapter-menu {
+  display: block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 1em;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  /* line 129, ../assets/scss/_base.scss */
+  .smart-video.fullscreen .chapter-menu {
+    width: 300px;
+  }
+}
+/* line 144, ../assets/scss/_base.scss */
+.smart-video.fullscreen .chapter-menu .chapter .details,
+.smart-video.fullscreen .chapter-menu .chapter .preview {
+  float: left;
+  width: 50%;
+  padding: 0.5em;
+}
+/* line 152, ../assets/scss/_base.scss */
+.smart-video.fullscreen .chapter-menu .chapter .preview img {
+  width: 100%;
+}
+/* line 157, ../assets/scss/_base.scss */
+.smart-video.fullscreen .chapter-menu .chapter .details {
+  color: #FFF;
+}
+/* line 162, ../assets/scss/_base.scss */
+.smart-video.fullscreen .chapter-menu.active, .smart-video.fullscreen .chapter-menu:hover {
+  opacity: 1;
+}
 
-/* line 113, ../assets/scss/_base.scss */
+/* line 170, ../assets/scss/_base.scss */
 .hide {
   display: none;
 }

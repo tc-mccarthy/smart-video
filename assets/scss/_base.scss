@@ -108,6 +108,63 @@ html {
 			}
 		}
 	}
+
+	.chapter-menu {
+		display: none;
+	}
+
+	&.fullscreen {
+		.control-bar {
+			position  : absolute;
+			bottom    : 0;
+			opacity   : 0;
+			transition: opacity 0.5s ease-in-out;
+			width     : 100%;
+
+			&:hover {
+				opacity: 0.75;
+			}
+		}
+
+		.chapter-menu {
+			display         : block;
+			position        : absolute;
+			height          : 100%;
+			top             : 0;
+			background-color: rgba(0,0,0,.5);
+			padding         : 1em;
+			opacity         : 0;
+			transition      : opacity 0.5s ease-in-out;
+			width           : 100%;
+			@media(min-width: 768px) {
+				width: 300px;
+			}
+
+			.chapter {
+				.details,
+				.preview {
+					float  : left;
+					width  : 50%;
+					padding: 0.5em;
+				}
+
+				.preview {
+					img {
+						width: 100%;
+					}
+				}
+
+				.details {
+					color: $white;
+				}
+			}
+
+			&.active,
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
 }
 
 .hide {
