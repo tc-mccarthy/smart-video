@@ -103,29 +103,13 @@ String.prototype.compile = function (obj) {
 						}
 					});
 
-					//when all of the video metadata is there, set the player up
-					_this.on("loadedmetadata", function () {
-						var wait = 0;
-						//set up chapter markers
-						$.each(o.chapters, function () {
-							var chapter = this,
-								duration = video.duration,
-								pct = Math.floor((chapter.seconds / duration) * 100);
-
-							ele.chapterMenu.append("<a class='chapter' href='#'></a>");
-
-							var chapterMenuEntry = ele.chapterMenu.find(".chapter").eq(-1);
-
-							ops.getFrame(chapter.seconds, function (thumbnail) {
-								ele.progressBar.append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
-								chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='headline'>{title}</div><div class='description'>{desc}</div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
-							});
-						});
-
-						video.currentTime = 0;
-						ops.ready = true;
-						container.addClass("ready");
-					});
+					//firefox compatible method to begin building the player when all of the video metadata is there
+					if (video.readyState >= 2) {
+						ops.playerSetup();
+					} else {
+						//add a listener if the video isn't ready yet
+						_this.on("loadedmetadata", ops.playerSetup);
+					}
 
 					//event handling for video start
 					_this.on("play playing", function (e) {
@@ -257,7 +241,31 @@ String.prototype.compile = function (obj) {
 							}
 						}
 					});
+				},
+
+				playerSetup: function () {
+					var wait = 0;
+					//set up chapter markers
+					$.each(o.chapters, function () {
+						var chapter = this,
+							duration = video.duration,
+							pct = Math.floor((chapter.seconds / duration) * 100);
+
+						ele.chapterMenu.append("<a class='chapter' href='#'></a>");
+
+						var chapterMenuEntry = ele.chapterMenu.find(".chapter").eq(-1);
+
+						ops.getFrame(chapter.seconds, function (thumbnail) {
+							ele.progressBar.append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
+							chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='headline'>{title}</div><div class='description'>{desc}</div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
+						});
+					});
+
+					video.currentTime = 0;
+					ops.ready = true;
+					container.addClass("ready");
 				}
+
 			};
 
 		ops.init();
