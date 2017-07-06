@@ -514,18 +514,26 @@ html {
 /* line 57, ../assets/scss/_base.scss */
 .smart-video .control-bar .controls {
   color: #FFF;
-  width: 5%;
+  width: 10%;
 }
-/* line 62, ../assets/scss/_base.scss */
+/* line 61, ../assets/scss/_base.scss */
+.smart-video .control-bar .controls > a {
+  margin-right: 1em;
+}
+/* line 64, ../assets/scss/_base.scss */
+.smart-video .control-bar .controls > a:last-child {
+  margin-right: 0;
+}
+/* line 70, ../assets/scss/_base.scss */
 .smart-video .control-bar .progress {
   height: 100%;
-  width: 95%;
+  width: 88%;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  left: 5%;
+  left: 12%;
 }
-/* line 70, ../assets/scss/_base.scss */
+/* line 78, ../assets/scss/_base.scss */
 .smart-video .control-bar .progress .inner {
   background-color: #FFF;
   width: 0;
@@ -535,7 +543,7 @@ html {
   height: 8px;
   position: absolute;
 }
-/* line 80, ../assets/scss/_base.scss */
+/* line 88, ../assets/scss/_base.scss */
 .smart-video .control-bar .progress .chapter {
   display: block;
   position: absolute;
@@ -544,7 +552,7 @@ html {
   height: 100%;
   width: 5px;
 }
-/* line 88, ../assets/scss/_base.scss */
+/* line 96, ../assets/scss/_base.scss */
 .smart-video .control-bar .progress .chapter .preview {
   display: none;
   position: absolute;
@@ -554,23 +562,23 @@ html {
   background-color: rgba(0, 0, 0, 0.5);
   left: -1325%;
 }
-/* line 97, ../assets/scss/_base.scss */
+/* line 105, ../assets/scss/_base.scss */
 .smart-video .control-bar .progress .chapter .preview img {
   width: 100%;
 }
-/* line 104, ../assets/scss/_base.scss */
+/* line 112, ../assets/scss/_base.scss */
 .smart-video .control-bar .progress .chapter.active .preview, .smart-video .control-bar .progress .chapter:hover .preview {
   display: block;
 }
-/* line 112, ../assets/scss/_base.scss */
+/* line 120, ../assets/scss/_base.scss */
 .smart-video .chapter-menu {
   display: none;
 }
-/* line 116, ../assets/scss/_base.scss */
+/* line 124, ../assets/scss/_base.scss */
 .smart-video .toggle {
   display: none;
 }
-/* line 121, ../assets/scss/_base.scss */
+/* line 129, ../assets/scss/_base.scss */
 .smart-video.fullscreen .toggle {
   position: absolute;
   display: block;
@@ -581,17 +589,17 @@ html {
   color: #FFF;
   text-decoration: none;
 }
-/* line 131, ../assets/scss/_base.scss */
+/* line 139, ../assets/scss/_base.scss */
 .smart-video.fullscreen .toggle[data-target='.chapter-menu'] {
   top: 10px;
   left: 10px;
 }
-/* line 136, ../assets/scss/_base.scss */
+/* line 144, ../assets/scss/_base.scss */
 .smart-video.fullscreen .toggle[data-target='.control-bar'] {
   bottom: 10px;
   right: 10px;
 }
-/* line 142, ../assets/scss/_base.scss */
+/* line 150, ../assets/scss/_base.scss */
 .smart-video.fullscreen .control-bar {
   position: absolute;
   bottom: 0;
@@ -599,11 +607,11 @@ html {
   transition: opacity 0.5s ease-in-out;
   width: 100%;
 }
-/* line 149, ../assets/scss/_base.scss */
+/* line 157, ../assets/scss/_base.scss */
 .smart-video.fullscreen .control-bar.active {
   opacity: 0.75;
 }
-/* line 154, ../assets/scss/_base.scss */
+/* line 162, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu {
   display: block;
   position: absolute;
@@ -618,12 +626,12 @@ html {
   -webkit-overflow-scrolling: touch;
 }
 @media (min-width: 768px) {
-  /* line 154, ../assets/scss/_base.scss */
+  /* line 162, ../assets/scss/_base.scss */
   .smart-video.fullscreen .chapter-menu {
     width: 300px;
   }
 }
-/* line 170, ../assets/scss/_base.scss */
+/* line 178, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter {
   border-bottom: solid 1px rgba(0, 0, 0, 0.25);
   display: block;
@@ -631,16 +639,16 @@ html {
   text-decoration: none;
   color: #FFF;
 }
-/* line 177, ../assets/scss/_base.scss */
+/* line 185, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter.active {
   background-color: rgba(255, 255, 255, 0.5);
   color: #000;
 }
-/* line 182, ../assets/scss/_base.scss */
+/* line 190, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter:last-child {
   border: 0;
 }
-/* line 186, ../assets/scss/_base.scss */
+/* line 194, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter .headline,
 .smart-video.fullscreen .chapter-menu .chapter .preview {
   display: inline-block;
@@ -648,23 +656,23 @@ html {
   vertical-align: top;
   font-size: 1.5em;
 }
-/* line 194, ../assets/scss/_base.scss */
+/* line 202, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter .description,
 .smart-video.fullscreen .chapter-menu .chapter .headline,
 .smart-video.fullscreen .chapter-menu .chapter .preview {
   padding: 0.5em;
   text-decoration: none;
 }
-/* line 202, ../assets/scss/_base.scss */
+/* line 210, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter .preview img {
   width: 100%;
 }
-/* line 208, ../assets/scss/_base.scss */
+/* line 216, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu.active {
   opacity: 1;
 }
 
-/* line 215, ../assets/scss/_base.scss */
+/* line 223, ../assets/scss/_base.scss */
 .hide {
   display: none;
 }

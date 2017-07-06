@@ -21,6 +21,8 @@ String.prototype.compile = function (obj) {
 				onPause: false, //callback for pause event
 				onComplete: false, //callback for complete event
 				mode: 'embed', //can be embed | fullscreen
+				hideControls: false,
+				hideChapterMenu: false
 			}, options),
 			_this = this,
 			video = _this[0],
@@ -53,12 +55,25 @@ String.prototype.compile = function (obj) {
 						ops.resize();
 					}
 
-					_this.after("<div class='control-bar'> <div class='controls'> <a class='fa fa-play'></a> <a class='fa fa-pause hide'></a> </div> <div class='progress'> <div class='inner'></div> </div> <div class='clearfix'></div> </div>");
+					_this.after("<div class='control-bar'> <div class='controls'> <a class='fa fa-play'></a> <a class='fa fa-pause hide'></a> <a class='fa fa-volume-up'></a> <a class='fa fa-arrows-alt'></a> </div> <div class='progress'> <div class='inner'></div> </div> <div class='clearfix'></div> </div>");
 					_this.after("<div class='chapter-menu'></div>");
 
 					if (o.mode === "fullscreen") {
-						_this.after("<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-icon='fa-list-ul' href='#'></a>");
-						_this.after("<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-icon='fa-toggle-off' href='#'></a>");
+						var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-icon='fa-list-ul' href='#'></a>",
+							controlsToggle = "<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-icon='fa-toggle-off' href='#'></a>";
+
+						if (!o.hideChapterMenu) {
+							container.find(".chapter-menu").addClass("active");
+							chapterToggle = "<a class='fa fa-close toggle' data-target='.chapter-menu' data-icon='fa-list-ul' href='#'></a>";
+						}
+
+						if (!o.hideControls) {
+							container.find(".control-bar").addClass("active");
+							controlsToggle = "<a class='fa fa-close toggle' data-target='.control-bar' data-icon='fa-toggle-off' href='#'></a>";
+						}
+
+						_this.after(chapterToggle);
+						_this.after(controlsToggle);
 					}
 
 

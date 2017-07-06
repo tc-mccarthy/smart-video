@@ -56,16 +56,24 @@ html {
 
 		.controls {
 			color: $white;
-			width: 5%;
+			width: 10%;
+
+			> a {
+				margin-right: 1em;
+
+				&:last-child {
+					margin-right: 0;
+				}
+			}
 		}
 
 		.progress {
 			height   : 100%;
-			width    : 95%;
+			width    : 88%;
 			position : absolute;
 			top      : 50%;
 			transform: translateY(-50%);
-			left     : 5%;
+			left     : 12%;
 
 			.inner {
 				background-color: $white;
