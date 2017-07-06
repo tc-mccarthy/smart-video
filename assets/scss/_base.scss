@@ -1,0 +1,57 @@
+body,
+html {
+	font-size: 16px;
+	width    : 100%;
+	height   : 100%;
+}
+
+.clearfix {
+	clear: both;
+}
+
+.smart-video {
+	video {
+		width  : 100%;
+		display: block;
+	}
+
+	.control-bar {
+		padding         : 0.5em;
+		background-color: $black;
+		min-height      : 25px;
+		position        : relative;
+
+		.controls,
+		.progress {
+			float: left;
+		}
+
+		.controls {
+			color: $white;
+			width: 5%;
+		}
+
+		.progress {
+			height   : 100%;
+			width    : 95%;
+			position : absolute;
+			top      : 50%;
+			transform: translateY(-50%);
+			left     : 5%;
+
+			.inner {
+				background-color: $white;
+				width           : 0;
+				height          : 100%;
+				top             : 50%;
+				transform       : translateY(-50%);
+				height          : 8px;
+				position        : absolute;
+			}
+		}
+	}
+}
+
+.hide {
+	display: none;
+}
