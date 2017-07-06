@@ -10,9 +10,37 @@ html {
 }
 
 .smart-video {
+	background-color: $black;
+	color           : $white;
+	position        : relative;
+
+	.loader {
+		font-size : 7em;
+		text-align: center;
+		position  : absolute;
+		top       : 35%;
+		left      : 50%;
+	}
+
 	video {
 		width  : 100%;
+		opacity: 0;
 		display: block;
+	}
+
+	.loader,
+	video {
+		transition: opacity 0.5s ease-in-out;
+	}
+
+	&.ready {
+		video {
+			opacity: 1;
+		}
+
+		.loader {
+			opacity: 0;
+		}
 	}
 
 	.control-bar {
@@ -47,6 +75,36 @@ html {
 				transform       : translateY(-50%);
 				height          : 8px;
 				position        : absolute;
+			}
+
+			.chapter {
+				display         : block;
+				position        : absolute;
+				z-index         : 2;
+				background-color: $yellow;
+				height          : 100%;
+				width           : 5px;
+
+				.preview {
+					display         : none;
+					position        : absolute;
+					top             : -300%;
+					width           : 150px;
+					padding         : 1em;
+					background-color: rgba(0,0,0,.5);
+					left            : -1325%;
+
+					img {
+						width: 100%;
+					}
+				}
+
+				&.active,
+				&:hover {
+					.preview {
+						display: block;
+					}
+				}
 			}
 		}
 	}

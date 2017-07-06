@@ -1,5 +1,10 @@
 $(function () {
 	$("video").smartVideo({
-		autoPlay: true
+		autoPlay: true,
+		chapters: [{
+			seconds: 5
+		}, {
+			seconds: 27
+		}]
 	});
 });
