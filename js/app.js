@@ -56,6 +56,11 @@ String.prototype.compile = function (obj) {
 					_this.after("<div class='control-bar'> <div class='controls'> <a class='fa fa-play'></a> <a class='fa fa-pause hide'></a> </div> <div class='progress'> <div class='inner'></div> </div> <div class='clearfix'></div> </div>");
 					_this.after("<div class='chapter-menu'></div>");
 
+					if (o.mode === "fullscreen") {
+						_this.after("<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-icon='fa-list-ul' href='#'></a>");
+						_this.after("<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-icon='fa-toggle-off' href='#'></a>");
+					}
+
 
 					ele = {
 						play: container.find(".fa-play"),
@@ -113,7 +118,7 @@ String.prototype.compile = function (obj) {
 
 							ops.getFrame(chapter.seconds, function (thumbnail) {
 								ele.progressBar.append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
-								chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='details'><h2>{title}</h2><p>{desc}</p></div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
+								chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='headline'>{title}</div><div class='description'>{desc}</div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
 							});
 						});
 
@@ -147,10 +152,18 @@ String.prototype.compile = function (obj) {
 						if (ops.ready) {
 							var currentTime = video.currentTime,
 								duration = video.duration,
-								pct = Math.floor((currentTime / duration) * 100);
+								pct = Math.floor((currentTime / duration) * 100),
+								chapterSelector = ele.chapterMenu.find("[data-seconds='{seconds}']".compile({ seconds: Math.floor(currentTime) }));
+
 
 							//pct is floored to that updates in the progress bar aren't as sporadic
 							ele.progress.width(pct + "%");
+
+							//highlight chapter
+							if (chapterSelector.length > 0) {
+								ele.chapterMenu.find("a.chapter").removeClass("active");
+								chapterSelector.addClass("active");
+							}
 						}
 					});
 
@@ -179,8 +192,6 @@ String.prototype.compile = function (obj) {
 					$("body").on("click", ".chapter-menu > a.chapter", function (e) {
 						e.preventDefault();
 
-						console.log("Click!");
-
 						var ele = $(this),
 							seconds = ele.data("seconds"),
 							container = ele.closest(".smart-video"),
@@ -189,7 +200,30 @@ String.prototype.compile = function (obj) {
 						video.currentTime = seconds;
 						video.play();
 					});
+
+					$("body").on("click", ".toggle", function (e) {
+						e.preventDefault();
+
+						var ele = $(this),
+							container = ele.closest(".smart-video"),
+							video = container.find("video")[0],
+							targetSelector = ele.data("target"),
+							icon = ele.data('icon'),
+							target = container.find(targetSelector);
+
+						console.log("click");
+
+						target.toggleClass("active");
+
+						if (target.hasClass("active")) {
+							ele.removeAttr("class").addClass("toggle fa fa-close");
+						} else {
+							ele.removeAttr("class").addClass("toggle fa " + icon);
+						}
+					});
 				},
+
+
 
 				getFrame: function (time, cb) {
 					var scale = 0.25,
