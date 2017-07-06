@@ -17,6 +17,7 @@ String.prototype.compile = function (obj) {
         var o = Object.assign({
                 autoSize: true,
                 chapters: [], //array of objects structured like {seconds: CUE POINT, title: CHAPTER TITLE, description: CHAPTER DESCRIPTION, thumbnail: THUMBNAIL. SCREEN CAP USED IF NOT PROVIDED}
+                onStart: false, //call back for first play event
                 onPlay: false, //callback for play event
                 onPause: false, //callback for pause event
                 onComplete: false, //callback for complete event
@@ -62,16 +63,6 @@ String.prototype.compile = function (obj) {
                         var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>",
                             controlsToggle = "<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-original-icon='fa-toggle-off' href='#'></a>";
 
-                        if (!o.hideChapterMenu) {
-                            container.find(".chapter-menu").addClass("active");
-                            chapterToggle = "<a class='fa fa-close toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>";
-                        }
-
-                        if (!o.hideControls) {
-                            container.find(".control-bar").addClass("active");
-                            controlsToggle = "<a class='fa fa-close toggle' data-target='.control-bar' data-original-icon='fa-toggle-off' href='#'></a>";
-                        }
-
                         _this.after(chapterToggle);
                         _this.after(controlsToggle);
                     }
@@ -82,7 +73,8 @@ String.prototype.compile = function (obj) {
                         pause: container.find(".fa-pause"),
                         progressBar: container.find(".progress"),
                         progress: container.find(".progress .inner"),
-                        chapterMenu: container.find(".chapter-menu")
+                        chapterMenu: container.find(".chapter-menu"),
+                        controls: container.find(".control-bar")
                     };
 
                     ops.binds();
@@ -126,10 +118,25 @@ String.prototype.compile = function (obj) {
                         _this.on("loadedmetadata", ops.playerSetup);
                     }
 
+                    _this.on("playing", function (e) {
+                        //ops for first play
+
+                    });
+
                     //event handling for video start
                     _this.on("play playing", function (e) {
                         ele.play.addClass("hide");
                         ele.pause.removeClass("hide");
+
+                        if (!ops.started) {
+                            ops.toggleControls("hide");
+                            ops.toggleChapterMenu("hide");
+                            ops.started = true;
+
+                            if (typeof o.onStart === "function") {
+                                o.onStart(e);
+                            }
+                        }
 
                         if (typeof o.onPlay === "function") {
                             o.onPlay(e);
@@ -208,21 +215,55 @@ String.prototype.compile = function (obj) {
                             video = container.find("video")[0],
                             targetSelector = ele.data("target"),
                             icon = ele.data('original-icon'),
-                            target = container.find(targetSelector);
+                            target = container.find(targetSelector),
+                            action;
 
-                        console.log("click");
-
-                        target.toggleClass("active");
-
-                        if (target.hasClass("active")) {
-                            ele.removeAttr("class").addClass("toggle fa fa-close");
-                        } else {
-                            ele.removeAttr("class").addClass("toggle fa " + icon);
+                        switch (targetSelector) {
+                        case '.chapter-menu':
+                            ops.toggleChapterMenu();
+                            break;
+                        case '.control-bar':
+                            ops.toggleControls();
+                            break;
                         }
                     });
                 },
 
+                toggleChapterMenu: function (op) {
+                    var toggleButton = container.find("[data-target='.chapter-menu']"),
+                        originalIcon = toggleButton.data("original-icon"),
+                        target = ele.chapterMenu;
 
+                    if (typeof op === "undefined") {
+                        op = (target.hasClass('active')) ? 'hide' : 'show';
+                    }
+
+                    if (op === "show") {
+                        target.addClass("active");
+                        toggleButton.removeAttr("class").addClass("fa fa-close toggle");
+                    } else {
+                        target.removeClass("active");
+                        toggleButton.removeAttr("class").addClass("fa toggle").addClass(originalIcon);
+                    }
+                },
+
+                toggleControls: function (op) {
+                    var toggleButton = container.find("[data-target='.control-bar']"),
+                        originalIcon = toggleButton.data("original-icon"),
+                        target = ele.controls;
+
+                    if (typeof op === "undefined") {
+                        op = (target.hasClass('active')) ? 'hide' : 'show';
+                    }
+
+                    if (op === "show") {
+                        target.addClass("active");
+                        toggleButton.removeAttr("class").addClass("fa fa-close toggle");
+                    } else {
+                        target.removeClass("active");
+                        toggleButton.removeAttr("class").addClass("fa toggle").addClass(originalIcon);
+                    }
+                },
 
                 getFrame: function (time, cb) {
                     var scale = 0.25,
@@ -284,6 +325,14 @@ String.prototype.compile = function (obj) {
                     video.currentTime = 0;
                     ops.ready = true;
                     container.addClass("ready");
+
+                    if (!o.hideChapterMenu) {
+                        ops.toggleChapterMenu("show");
+                    }
+
+                    if (!o.hideControls) {
+                        ops.toggleControls("show");
+                    }
                 },
 
                 checkiOS: function () {
