@@ -118,15 +118,25 @@ String.prototype.compile = function (obj) {
                         _this.on("loadedmetadata", ops.playerSetup);
                     }
 
-                    _this.on("playing", function (e) {
-                        //ops for first play
+                    _this.on("click", function (e) {
+                        ops.toggleControls('show');
 
+                        //ops for first play
+                        if (ops.playing) {
+                            video.pause();
+                        } else {
+                            video.play();
+                            setTimeout(function () {
+                                ops.toggleControls('hide');
+                            }, 1500);
+                        }
                     });
 
                     //event handling for video start
                     _this.on("play playing", function (e) {
                         ele.play.addClass("hide");
                         ele.pause.removeClass("hide");
+                        ops.playing = true;
 
                         if (!ops.started) {
                             ops.toggleControls("hide");
@@ -147,6 +157,7 @@ String.prototype.compile = function (obj) {
                     _this.on("pause", function (e) {
                         ele.play.removeClass("hide");
                         ele.pause.addClass("hide");
+                        ops.playing = false;
 
                         if (typeof o.onPause === "function") {
                             o.onPause(e);

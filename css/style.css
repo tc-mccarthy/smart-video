@@ -606,12 +606,14 @@ html {
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
   width: 100%;
+  pointer-events: none;
 }
-/* line 157, ../assets/scss/_base.scss */
+/* line 158, ../assets/scss/_base.scss */
 .smart-video.fullscreen .control-bar.active {
   opacity: 0.75;
+  pointer-events: all;
 }
-/* line 162, ../assets/scss/_base.scss */
+/* line 164, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu {
   display: block;
   position: absolute;
@@ -624,14 +626,15 @@ html {
   width: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  pointer-events: none;
 }
 @media (min-width: 768px) {
-  /* line 162, ../assets/scss/_base.scss */
+  /* line 164, ../assets/scss/_base.scss */
   .smart-video.fullscreen .chapter-menu {
     width: 300px;
   }
 }
-/* line 178, ../assets/scss/_base.scss */
+/* line 181, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter {
   border-bottom: solid 1px rgba(0, 0, 0, 0.25);
   display: block;
@@ -639,16 +642,16 @@ html {
   text-decoration: none;
   color: #FFF;
 }
-/* line 185, ../assets/scss/_base.scss */
+/* line 188, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter.active {
   background-color: rgba(255, 255, 255, 0.5);
   color: #000;
 }
-/* line 190, ../assets/scss/_base.scss */
+/* line 193, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter:last-child {
   border: 0;
 }
-/* line 194, ../assets/scss/_base.scss */
+/* line 197, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter .headline,
 .smart-video.fullscreen .chapter-menu .chapter .preview {
   display: inline-block;
@@ -656,23 +659,24 @@ html {
   vertical-align: top;
   font-size: 1.5em;
 }
-/* line 202, ../assets/scss/_base.scss */
+/* line 205, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter .description,
 .smart-video.fullscreen .chapter-menu .chapter .headline,
 .smart-video.fullscreen .chapter-menu .chapter .preview {
   padding: 0.5em;
   text-decoration: none;
 }
-/* line 210, ../assets/scss/_base.scss */
+/* line 213, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu .chapter .preview img {
   width: 100%;
 }
-/* line 216, ../assets/scss/_base.scss */
+/* line 219, ../assets/scss/_base.scss */
 .smart-video.fullscreen .chapter-menu.active {
   opacity: 1;
+  pointer-events: all;
 }
 
-/* line 223, ../assets/scss/_base.scss */
+/* line 227, ../assets/scss/_base.scss */
 .hide {
   display: none;
 }
