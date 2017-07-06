@@ -170,26 +170,34 @@ String.prototype.compile = function (obj) {
 				getFrame: function (time, cb) {
 					var scale = 0.25,
 						canvas = document.createElement("canvas"),
-						clone = $(video).clone(false, false);
+						clone = $(video).clone(false, false),
+						attempts = 0;
 
-					clone.prop("preload", "metadata");
+					// clone.appendTo("body");
+					// $(canvas).appendTo("body");
+
+					// clone.prop("preload", "metadata");
 
 					clone.on("loadedmetadata", function () {
-						clone.on("seeked", function () {
-							canvas.width = video.videoWidth * scale;
-							canvas.height = video.videoHeight * scale;
-							console.log(clone[0].currentTime);
-							canvas.getContext('2d')
-								.drawImage(clone[0], 0, 0, canvas.width, canvas.height);
+						canvas.width = clone[0].videoWidth * scale;
+						canvas.height = clone[0].videoHeight * scale;
+						clone[0].currentTime = time;
+					});
 
+					clone.on("seeked", function () {
+						canvas.getContext('2d')
+							.drawImage(clone[0], 0, 0, canvas.width, canvas.height);
+
+						//hack to fix frame grab on iOS
+						if (attempts < 2) {
+							attempts++;
+							clone[0].currentTime = time;
+						} else {
+							clone.remove();
 							if (typeof cb === "function") {
-								clone.remove();
 								cb(canvas.toDataURL());
 							}
-						});
-
-						clone[0].currentTime = time;
-						clone[0].pause();
+						}
 					});
 				}
 			};
