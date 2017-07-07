@@ -5,9 +5,3 @@
 @import "_vars";
 @import "_mixins";
 @import "_base";
-@media (min-width:$mobileBP) {
-	 @import"_tablet";
-}
-@media (min-width:$desktopBP) {
-	 @import"_desktop";
-}

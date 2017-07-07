@@ -1,0 +1,64 @@
+.chapter-menu {
+    position        : absolute;
+    top             : 0;
+    padding         : 1em;
+    background-color: $translucent_black;
+    height          : 100%;
+    overflow        : auto;
+    opacity         : 0;
+    pointer-events  : none;
+    transition      : opacity 0.5s ease-in-out;
+    width           : 100%;
+    @media(min-width: $desktopBP) {
+        width: 320px;
+    }
+
+    &.active {
+        pointer-events: all;
+        opacity       : 1;
+    }
+
+    a {
+        text-decoration: none;
+        color          : $white;
+
+        &.chapter {
+            display      : block;
+            border-bottom: 1px solid $translucent_black;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+
+            &.active {
+                background-color: $translucent_white;
+                color           : $black;
+            }
+        }
+    }
+
+    .headline,
+    .preview {
+        padding: 0.5em;
+        float  : left;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .headline {
+        width    : 55%;
+        font-size: 1.5em;
+    }
+
+    .preview {
+        width    : 45%;
+        font-size: 1.2em;
+    }
+
+    .description {
+        padding: 1em;
+        clear  : both;
+    }
+}

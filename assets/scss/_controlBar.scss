@@ -1,0 +1,93 @@
+$controlBarHeight: 35px;
+
+.control-bar {
+    position        : absolute;
+    width           : 100%;
+    bottom          : 0;
+    height          : $controlBarHeight;
+    opacity         : 0;
+    transition      : opacity 0.5s ease-in-out;
+    pointer-events  : none;
+    background-color: $translucent_black;
+    font-size       : 0.9em;
+
+    &.active {
+        opacity       : 1;
+        pointer-events: all;
+    }
+
+    a {
+        color          : $white;
+        text-decoration: none;
+    }
+
+    .controls,
+    .fullscreen,
+    .progress,
+    .timecode {
+        display: inline-block;
+        padding: 0.5em;
+
+        .fa-volume-up {
+            display: none;
+            @media(min-width: $desktopBP) {
+                display: inline-block;
+            }
+        }
+    }
+
+    .controls {
+        width: 5%;
+    }
+
+    .timecode {
+        width: 20%;
+    }
+
+    .progress {
+        width   : 55%;
+        position: relative;
+        @media(min-width: $desktopBP) {
+            width: 70%;
+        }
+
+        .bar {
+            background-color: $white;
+            height          : 10px;
+            position        : absolute;
+        }
+
+        .inner {
+            position: relative;
+
+            .chapter {
+                position        : absolute;
+                top             : -14px;
+                width           : 5px;
+                background-color: $yellow;
+                height          : $controlBarHeight;
+
+                .preview {
+                    width           : 100px;
+                    background-color: $translucent_black;
+                    padding         : 0.5em;
+                    border-radius   : 10px;
+                    position        : absolute;
+                    top             : -70px;
+                    left            : -50px;
+                    opacity         : 0;
+
+                    img {
+                        width: 100%;
+                    }
+                }
+
+                &:hover {
+                    .preview {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -21,7 +21,6 @@ String.prototype.compile = function (obj) {
                 onPlay: false, //callback for play event
                 onPause: false, //callback for pause event
                 onComplete: false, //callback for complete event
-                mode: 'embed', //can be embed | fullscreen
                 hideControls: false,
                 hideChapterMenu: false
             }, options),
@@ -33,7 +32,7 @@ String.prototype.compile = function (obj) {
                 ready: false,
                 init: function () {
                     //make this a smart video
-                    _this.wrap("<div class='smart-video {mode}'></div>".compile({ mode: o.mode }));
+                    _this.wrap("<div class='smart-video'></div>".compile({ mode: o.mode }));
 
                     //set new wrapper as 'container'
                     container = _this.closest(".smart-video");
@@ -56,29 +55,29 @@ String.prototype.compile = function (obj) {
                         ops.resize();
                     }
 
-                    _this.after("<div class='control-bar'> <div class='controls'> <a class='fa fa-play'></a> <a class='fa fa-pause hide'></a> <a class='fa fa-volume-up'></a> <a class='fa fa-arrows-alt'></a> </div> <div class='progress'> <div class='inner'></div> </div> <div class='clearfix'></div> </div>");
+                    _this.after("<div class='control-bar'> <div class='controls'> <a class='fa fa-play' href='#'></a> <a class='fa fa-pause hide' href='#'></a> <a class='fa fa-volume-up' href='#'></a> </div> <div class='timecode'></div> <div class='progress'> <div class='bar'></div> <div class='inner'></div> </div> <div class='clearfix'></div> </div>");
                     _this.after("<div class='chapter-menu'></div>");
 
-                    if (o.mode === "fullscreen") {
-                        var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>",
-                            controlsToggle = "<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-original-icon='fa-toggle-off' href='#'></a>";
+                    var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>",
+                        controlsToggle = "<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-original-icon='fa-toggle-off' href='#'></a>";
 
-                        _this.after(chapterToggle);
-                        _this.after(controlsToggle);
-                    }
+                    _this.after(chapterToggle);
+                    _this.after(controlsToggle);
 
 
                     ele = {
                         play: container.find(".fa-play"),
                         pause: container.find(".fa-pause"),
                         progressBar: container.find(".progress"),
-                        progress: container.find(".progress .inner"),
+                        progress: container.find(".progress .bar"),
                         chapterMenu: container.find(".chapter-menu"),
-                        controls: container.find(".control-bar")
+                        controls: container.find(".control-bar"),
+                        timecode: container.find(".timecode")
                     };
 
                     ops.binds();
                 },
+
                 resize: function () {
                     var width = _this.width(),
                         height = (width * 0.5625);
@@ -172,9 +171,11 @@ String.prototype.compile = function (obj) {
                                 pct = Math.floor((currentTime / duration) * 100),
                                 chapterSelector = ele.chapterMenu.find("[data-seconds='{seconds}']".compile({ seconds: Math.floor(currentTime) }));
 
-
                             //pct is floored to that updates in the progress bar aren't as sporadic
                             ele.progress.width(pct + "%");
+
+                            //update timecode
+                            ele.timecode.text(ops.secondsToTimecode(parseInt(currentTime)));
 
                             //highlight chapter
                             if (chapterSelector.length > 0) {
@@ -216,6 +217,16 @@ String.prototype.compile = function (obj) {
 
                         video.currentTime = seconds;
                         video.play();
+                    });
+
+                    //progress chapter
+                    $("body").on("click", ".control-bar a.chapter", function (e) {
+                        e.preventDefault();
+
+                        var ele = $(this);
+
+                        $(".control-bar a.chapter.active").removeClass("active");
+                        ele.addClass("active");
                     });
 
                     $("body").on("click", ".toggle", function (e) {
@@ -315,20 +326,46 @@ String.prototype.compile = function (obj) {
                     });
                 },
 
+                timecodeToSeconds: function (timecode) {
+                    var arr = timecode.split(":");
+
+                    return ((parseInt(arr[0]) * 3600) + (parseInt(arr[1]) * 60) + parseInt(arr[2]));
+                },
+
+                secondsToTimecode: function (seconds) {
+                    var hours = parseInt(seconds / 3600),
+                        hours_seconds = seconds % 3600,
+                        minutes = parseInt(hours_seconds / 60),
+                        minutes_seconds = hours_seconds % 60;
+
+                    return "{hours}:{minutes}:{seconds}".compile({ hours: ops.zeroPad(hours), minutes: ops.zeroPad(minutes), seconds: ops.zeroPad(minutes_seconds) });
+                },
+
+                zeroPad: function (num) {
+                    if (parseInt(num) < 10) {
+                        return "0" + num;
+                    } else {
+                        return num;
+                    }
+                },
+
                 playerSetup: function () {
                     var wait = 0;
                     //set up chapter markers
                     $.each(o.chapters, function () {
                         var chapter = this,
-                            duration = video.duration,
-                            pct = Math.floor((chapter.seconds / duration) * 100);
+                            duration = video.duration;
+
+                        chapter.seconds = ops.timecodeToSeconds(chapter.timecode);
+
+                        var pct = Math.floor((chapter.seconds / duration) * 100);
 
                         ele.chapterMenu.append("<a class='chapter' href='#'></a>");
 
                         var chapterMenuEntry = ele.chapterMenu.find(".chapter").eq(-1);
 
                         ops.getFrame(chapter.seconds, function (thumbnail) {
-                            ele.progressBar.append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
+                            ele.progressBar.find(".inner").append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
                             chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='headline'>{title}</div><div class='description'>{desc}</div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
                         });
                     });
@@ -365,33 +402,33 @@ String.prototype.compile = function (obj) {
 })(jQuery);
 
 $(function () {
-	$("video").smartVideo({
-		autoPlay: true,
-		chapters: [{
-				seconds: 1,
-				title: "Chapter 1",
-				description: "Look at the pretty colors!"
-			},
-			{
-				seconds: 16,
-				title: "Chapter 2",
-				description: "Humor: Bird gets knocked out"
-			},
-			{
-				seconds: 27,
-				title: "Chapter 3: Title Screen",
-				description: "This is where the title finally shows up."
-			}, {
-				seconds: 41,
-				title: "Chapter 4: The awakening",
-				description: "Our hero awakens from his slumber"
-			},
-			{
-				seconds: 56,
-				title: "Chapter 5: Starting the day",
-				description: "After a nice neck crack, Buck sets out"
-			}
-		],
-		mode: "fullscreen"
-	});
+    $("video").smartVideo({
+        autoPlay: true,
+        chapters: [{
+                timecode: "00:00:01",
+                title: "Chapter 1",
+                description: "Look at the pretty colors!"
+            },
+            {
+                timecode: "00:00:16",
+                title: "Chapter 2",
+                description: "Humor: Bird gets knocked out"
+            },
+            {
+                timecode: "00:00:27",
+                title: "Chapter 3: Title Screen",
+                description: "This is where the title finally shows up."
+            }, {
+                timecode: "00:00:41",
+                title: "Chapter 4: The awakening",
+                description: "Our hero awakens from his slumber"
+            },
+            {
+                timecode: "00:00:56",
+                title: "Chapter 5: Starting the day",
+                description: "After a nice neck crack, Buck sets out"
+            }
+        ],
+        mode: "fullscreen"
+    });
 });
