@@ -26,6 +26,8 @@ String.prototype.compile = function (obj) {
             }, options),
             _this = this,
             video = _this[0],
+            canvas = document.createElement("canvas"),
+            clone = _this.clone(false, false),
             container,
             ele,
             ops = {
@@ -36,7 +38,7 @@ String.prototype.compile = function (obj) {
 
                     //set new wrapper as 'container'
                     container = _this.closest(".smart-video");
-                    container.prepend("<i class='fa fa-spin fa-cog loader'></i>");
+                    container.prepend("<div class='loader'><i class='fa fa-spin fa-cog'></i></div>");
 
 
                     /* REQUIRED FOR CUSTOM CONTROLS */
@@ -55,7 +57,7 @@ String.prototype.compile = function (obj) {
                         ops.resize();
                     }
 
-                    _this.after("<div class='control-bar'> <div class='controls'> <a class='fa fa-play' href='#'></a> <a class='fa fa-pause hide' href='#'></a> <a class='fa fa-volume-up' href='#'></a> </div> <div class='timecode'></div> <div class='progress'> <div class='bar'></div> <div class='inner'></div> </div> <div class='clearfix'></div> </div>");
+                    _this.after("<div class='control-bar'> <div class='inner'> <div class='controls'> <a class='fa fa-play' href='#'></a> <a class='fa fa-pause hide' href='#'></a> <a class='fa fa-volume-up' href='#'></a> </div> <div class='timecode'></div> <div class='progress'> <div class='inner'> <div class='bar'></div> </div> </div> </div> </div>");
                     _this.after("<div class='chapter-menu'></div>");
 
                     var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>",
@@ -289,25 +291,25 @@ String.prototype.compile = function (obj) {
 
                 getFrame: function (time, cb) {
                     var scale = 0.25,
-                        canvas = document.createElement("canvas"),
-                        clone = $(video).clone(false, false),
-                        attempts = 0;
-
-                    // clone.appendTo("body");
-                    // $(canvas).appendTo("body");
-
-                    // clone.prop("preload", "metadata");
+                        attempts = 0,
+                        prepClone = function () {
+                            canvas.width = clone[0].videoWidth * scale;
+                            canvas.height = clone[0].videoHeight * scale;
+                            clone[0].currentTime = time;
+                        };
 
                     if (!!ops.checkiOS() && (ops.checkiOS()[0] < 10 || ops.checkiOS()[1] < 3)) {
                         cb(false);
                         return false;
                     }
 
-                    clone.on("loadedmetadata", function () {
-                        canvas.width = clone[0].videoWidth * scale;
-                        canvas.height = clone[0].videoHeight * scale;
-                        clone[0].currentTime = time;
-                    });
+                    if (clone[0].readyState >= 2) {
+                        prepClone();
+                    } else {
+                        clone.on("loadedmetadata", prepClone);
+                    }
+
+
 
                     clone.on("seeked", function () {
                         canvas.getContext('2d')
@@ -318,7 +320,7 @@ String.prototype.compile = function (obj) {
                             attempts++;
                             clone[0].currentTime = time;
                         } else {
-                            clone.remove();
+                            clone.off("seeked");
                             if (typeof cb === "function") {
                                 cb(canvas.toDataURL());
                             }
@@ -350,37 +352,44 @@ String.prototype.compile = function (obj) {
                 },
 
                 playerSetup: function () {
-                    var wait = 0;
-                    //set up chapter markers
-                    $.each(o.chapters, function () {
-                        var chapter = this,
-                            duration = video.duration;
+                    var wait = 0,
+                        duration = video.duration;
 
+                    //set up chapter markers
+
+                    async.eachSeries(o.chapters, function (chapter, nextChapter) {
                         chapter.seconds = ops.timecodeToSeconds(chapter.timecode);
 
-                        var pct = Math.floor((chapter.seconds / duration) * 100);
+                        var pct = Math.floor((chapter.seconds / duration) * 100),
+                            setThumbnail = function (thumbnail) {
+                                ele.progressBar.find(".inner").append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
+                                chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='headline'>{title}</div><div class='description'>{desc}</div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
+                                nextChapter();
+                            };
 
                         ele.chapterMenu.append("<a class='chapter' href='#'></a>");
 
                         var chapterMenuEntry = ele.chapterMenu.find(".chapter").eq(-1);
 
-                        ops.getFrame(chapter.seconds, function (thumbnail) {
-                            ele.progressBar.find(".inner").append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
-                            chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='headline'>{title}</div><div class='description'>{desc}</div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
-                        });
+                        if (!chapter.thumbnail) {
+                            ops.getFrame(chapter.seconds, setThumbnail);
+                        } else {
+                            setThumbnail(chapter.thumbnail);
+                        }
+                    }, function (err) {
+                        video.currentTime = 0;
+                        ops.ready = true;
+                        container.addClass("ready");
+                        clone.remove();
+
+                        if (!o.hideChapterMenu) {
+                            ops.toggleChapterMenu("show");
+                        }
+
+                        if (!o.hideControls) {
+                            ops.toggleControls("show");
+                        }
                     });
-
-                    video.currentTime = 0;
-                    ops.ready = true;
-                    container.addClass("ready");
-
-                    if (!o.hideChapterMenu) {
-                        ops.toggleChapterMenu("show");
-                    }
-
-                    if (!o.hideControls) {
-                        ops.toggleControls("show");
-                    }
                 },
 
                 checkiOS: function () {

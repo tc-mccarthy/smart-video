@@ -474,33 +474,39 @@ html {
 }
 /* line 17, ../assets/scss/_base.scss */
 .smart-video .loader {
-  font-size: 7em;
-  text-align: center;
+  font-size: 3em;
   position: absolute;
-  top: 35%;
+  transform: translateY(-50%) translateX(-50%);
+  top: 50%;
   left: 50%;
 }
-/* line 25, ../assets/scss/_base.scss */
+@media (min-width: 769px) {
+  /* line 17, ../assets/scss/_base.scss */
+  .smart-video .loader {
+    font-size: 7em;
+  }
+}
+/* line 28, ../assets/scss/_base.scss */
 .smart-video video {
   width: 100%;
   opacity: 0;
   display: block;
   max-height: 100vh;
 }
-/* line 32, ../assets/scss/_base.scss */
+/* line 35, ../assets/scss/_base.scss */
 .smart-video .loader,
 .smart-video video {
   transition: opacity 0.5s ease-in-out;
 }
-/* line 38, ../assets/scss/_base.scss */
+/* line 41, ../assets/scss/_base.scss */
 .smart-video.ready video {
   opacity: 1;
 }
-/* line 42, ../assets/scss/_base.scss */
+/* line 45, ../assets/scss/_base.scss */
 .smart-video.ready .loader {
   opacity: 0;
 }
-/* line 47, ../assets/scss/_base.scss */
+/* line 50, ../assets/scss/_base.scss */
 .smart-video .toggle {
   background-color: rgba(0, 0, 0, 0.65);
   border-radius: 5px;
@@ -510,12 +516,12 @@ html {
   z-index: 3;
   text-decoration: none;
 }
-/* line 56, ../assets/scss/_base.scss */
+/* line 59, ../assets/scss/_base.scss */
 .smart-video .toggle[data-target='.chapter-menu'] {
   top: 10px;
   left: 10px;
 }
-/* line 61, ../assets/scss/_base.scss */
+/* line 64, ../assets/scss/_base.scss */
 .smart-video .toggle[data-target='.control-bar'] {
   bottom: 2px;
   right: 0;
@@ -594,7 +600,7 @@ html {
   position: absolute;
   width: 100%;
   bottom: 0;
-  height: 35px;
+  height: 20px;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
   pointer-events: none;
@@ -607,19 +613,27 @@ html {
   pointer-events: all;
 }
 /* line 19, ../assets/scss/_controlBar.scss */
+.smart-video .control-bar .inner {
+  position: relative;
+  height: 100%;
+}
+/* line 24, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar a {
   color: #FFF;
   text-decoration: none;
 }
-/* line 24, ../assets/scss/_controlBar.scss */
+/* line 29, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .controls,
 .smart-video .control-bar .fullscreen,
 .smart-video .control-bar .progress,
 .smart-video .control-bar .timecode {
   display: inline-block;
   padding: 0.5em;
+  height: 100%;
+  padding: 0.2em 0.5em;
+  vertical-align: top;
 }
-/* line 31, ../assets/scss/_controlBar.scss */
+/* line 39, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .controls .fa-volume-up,
 .smart-video .control-bar .fullscreen .fa-volume-up,
 .smart-video .control-bar .progress .fa-volume-up,
@@ -627,7 +641,7 @@ html {
   display: none;
 }
 @media (min-width: 769px) {
-  /* line 31, ../assets/scss/_controlBar.scss */
+  /* line 39, ../assets/scss/_controlBar.scss */
   .smart-video .control-bar .controls .fa-volume-up,
   .smart-video .control-bar .fullscreen .fa-volume-up,
   .smart-video .control-bar .progress .fa-volume-up,
@@ -635,45 +649,41 @@ html {
     display: inline-block;
   }
 }
-/* line 39, ../assets/scss/_controlBar.scss */
+/* line 47, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .controls {
   width: 5%;
 }
-/* line 43, ../assets/scss/_controlBar.scss */
+/* line 51, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .timecode {
   width: 20%;
 }
-/* line 47, ../assets/scss/_controlBar.scss */
+/* line 55, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress {
   width: 55%;
-  position: relative;
+  padding: 0;
 }
 @media (min-width: 769px) {
-  /* line 47, ../assets/scss/_controlBar.scss */
+  /* line 55, ../assets/scss/_controlBar.scss */
   .smart-video .control-bar .progress {
     width: 70%;
   }
 }
-/* line 54, ../assets/scss/_controlBar.scss */
+/* line 62, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .bar {
   background-color: #FFF;
-  height: 10px;
+  height: 100%;
   position: absolute;
 }
-/* line 60, ../assets/scss/_controlBar.scss */
-.smart-video .control-bar .progress .inner {
-  position: relative;
-}
-/* line 63, ../assets/scss/_controlBar.scss */
-.smart-video .control-bar .progress .inner .chapter {
+/* line 68, ../assets/scss/_controlBar.scss */
+.smart-video .control-bar .progress .chapter {
   position: absolute;
-  top: -14px;
+  top: 0;
   width: 5px;
   background-color: yellow;
-  height: 35px;
+  height: 100%;
 }
-/* line 70, ../assets/scss/_controlBar.scss */
-.smart-video .control-bar .progress .inner .chapter .preview {
+/* line 75, ../assets/scss/_controlBar.scss */
+.smart-video .control-bar .progress .chapter .preview {
   width: 100px;
   background-color: rgba(0, 0, 0, 0.65);
   padding: 0.5em;
@@ -683,16 +693,16 @@ html {
   left: -50px;
   opacity: 0;
 }
-/* line 80, ../assets/scss/_controlBar.scss */
-.smart-video .control-bar .progress .inner .chapter .preview img {
+/* line 85, ../assets/scss/_controlBar.scss */
+.smart-video .control-bar .progress .chapter .preview img {
   width: 100%;
 }
-/* line 86, ../assets/scss/_controlBar.scss */
-.smart-video .control-bar .progress .inner .chapter:hover .preview {
+/* line 91, ../assets/scss/_controlBar.scss */
+.smart-video .control-bar .progress .chapter:hover .preview {
   opacity: 1;
 }
 
-/* line 70, ../assets/scss/_base.scss */
+/* line 73, ../assets/scss/_base.scss */
 .hide {
   display: none;
 }

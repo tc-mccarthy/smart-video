@@ -1,4 +1,4 @@
-$controlBarHeight: 35px;
+$controlBarHeight: 20px;
 
 .control-bar {
     position        : absolute;
@@ -16,6 +16,11 @@ $controlBarHeight: 35px;
         pointer-events: all;
     }
 
+    .inner {
+        position: relative;
+        height  : 100%;
+    }
+
     a {
         color          : $white;
         text-decoration: none;
@@ -25,8 +30,11 @@ $controlBarHeight: 35px;
     .fullscreen,
     .progress,
     .timecode {
-        display: inline-block;
-        padding: 0.5em;
+        display       : inline-block;
+        padding       : 0.5em;
+        height        : 100%;
+        padding       : 0.2em 0.5em;
+        vertical-align: top;
 
         .fa-volume-up {
             display: none;
@@ -45,47 +53,43 @@ $controlBarHeight: 35px;
     }
 
     .progress {
-        width   : 55%;
-        position: relative;
+        width  : 55%;
+        padding: 0;
         @media(min-width: $desktopBP) {
             width: 70%;
         }
 
         .bar {
             background-color: $white;
-            height          : 10px;
+            height          : 100%;
             position        : absolute;
         }
 
-        .inner {
-            position: relative;
+        .chapter {
+            position        : absolute;
+            top             : 0;
+            width           : 5px;
+            background-color: $yellow;
+            height          : 100%;
 
-            .chapter {
+            .preview {
+                width           : 100px;
+                background-color: $translucent_black;
+                padding         : 0.5em;
+                border-radius   : 10px;
                 position        : absolute;
-                top             : -14px;
-                width           : 5px;
-                background-color: $yellow;
-                height          : $controlBarHeight;
+                top             : -70px;
+                left            : -50px;
+                opacity         : 0;
 
-                .preview {
-                    width           : 100px;
-                    background-color: $translucent_black;
-                    padding         : 0.5em;
-                    border-radius   : 10px;
-                    position        : absolute;
-                    top             : -70px;
-                    left            : -50px;
-                    opacity         : 0;
-
-                    img {
-                        width: 100%;
-                    }
+                img {
+                    width: 100%;
                 }
+            }
 
-                &:hover {
-                    .preview {
-                        opacity: 1;
-                    }
+            &:hover {
+                .preview {
+                    opacity: 1;
                 }
             }
         }
