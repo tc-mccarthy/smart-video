@@ -30,10 +30,55 @@ html {
 		opacity   : 0;
 		display   : block;
 		max-height: 100vh;
+		transition: width 3s ease-in-out, opacity 0.5s ease-in-out;
 	}
 
-	.loader,
-	video {
+	.event_code {
+		display   : block;
+		width     : 0;
+		transition: width 3s ease-in-out;
+	}
+
+	&.half,
+	&.quarter,
+	&.three-quarter {
+		.event_code,
+		video {
+			float: left;
+		}
+	}
+
+	&.quarter {
+		video {
+			width: 75%;
+		}
+
+		.event_code {
+			width: 25%;
+		}
+	}
+
+	&.half {
+		video {
+			width: 50%;
+		}
+
+		.event_code {
+			width: 50%;
+		}
+	}
+
+	&.three-quarter {
+		video {
+			width: 25%;
+		}
+
+		.event_code {
+			width: 75%;
+		}
+	}
+
+	.loader {
 		transition: opacity 0.5s ease-in-out;
 	}
 

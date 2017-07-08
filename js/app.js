@@ -5574,12 +5574,42 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-/*
-	smartVideo jQuery plugin
-	Author: TC McCarthy
-	An HTML5 video player with chapter abilities, iOS enhancements and finite control for the average user/dev
-*/
+/* OBJECT.ASSIGN */
+if (!Object.assign) {
+    Object.defineProperty(Object, 'assign', {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: function (target) {
+            'use strict';
+            if (target === undefined || target === null) {
+                throw new TypeError('Cannot convert first argument to object');
+            }
 
+            var to = Object(target);
+            for (var i = 1; i < arguments.length; i++) {
+                var nextSource = arguments[i];
+                if (nextSource === undefined || nextSource === null) {
+                    continue;
+                }
+                nextSource = Object(nextSource);
+
+                var keysArray = Object.keys(Object(nextSource));
+                for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+                    var nextKey = keysArray[nextIndex];
+                    var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+                    if (desc !== undefined && desc.enumerable) {
+                        to[nextKey] = nextSource[nextKey];
+                    }
+                }
+            }
+            return to;
+        }
+    });
+}
+
+
+/* STRING.compile templating */
 String.prototype.compile = function (obj) {
     var str = this;
 
@@ -5588,11 +5618,18 @@ String.prototype.compile = function (obj) {
     });
 };
 
+/*
+	smartVideo jQuery plugin
+	Author: TC McCarthy
+	An HTML5 video player with chapter abilities, iOS enhancements and finite control for the average user/dev
+*/
+
 (function ($) {
     $.fn.smartVideo = function (options) {
         var o = Object.assign({
                 autoSize: true,
                 chapters: [], //array of objects structured like {seconds: CUE POINT, title: CHAPTER TITLE, description: CHAPTER DESCRIPTION, thumbnail: THUMBNAIL. SCREEN CAP USED IF NOT PROVIDED}
+                events: [], //array of objects structured like {start: BEGIN EVENT, end: END EVENT, size: HOW BIG THE CONTAINER SHOULD BE}
                 onStart: false, //call back for first play event
                 onPlay: false, //callback for play event
                 onPause: false, //callback for pause event
@@ -5635,6 +5672,7 @@ String.prototype.compile = function (obj) {
 
                     _this.after("<div class='control-bar'> <div class='inner'> <div class='controls'> <a class='fa fa-play' href='#'></a> <a class='fa fa-pause hide' href='#'></a> <a class='fa fa-volume-up' href='#'></a> </div> <div class='timecode'></div> <div class='progress'> <div class='inner'> <div class='bar'></div> </div> </div> </div> </div>");
                     _this.after("<div class='chapter-menu'></div>");
+                    _this.after("<div class='event_code'>WORKING</div>");
 
                     var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>",
                         controlsToggle = "<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-original-icon='fa-toggle-off' href='#'></a>";
@@ -5653,7 +5691,26 @@ String.prototype.compile = function (obj) {
                         timecode: container.find(".timecode")
                     };
 
+                    ops.eventsSetup();
                     ops.binds();
+                },
+
+                eventsSetup: function () {
+                    //convert event timecodes to seconds
+                    $.each(o.events, function (key, ee) {
+                        ee.seconds = {};
+                        ee.seconds.start = ops.timecodeToSeconds(ee.start);
+                        ee.seconds.end = ops.timecodeToSeconds(ee.end);
+
+                        o.events[key] = Object.assign({
+                            seconds: {}, //object of timecodes converted to seconds
+                            start: "00:00:00",
+                            end: "00:00:00",
+                            classes: "",
+                            size: "three-quarter",
+                            html: ""
+                        }, ee);
+                    });
                 },
 
                 resize: function () {
@@ -5744,7 +5801,7 @@ String.prototype.compile = function (obj) {
                     //event handling for progress
                     _this.on("timeupdate", function (e) {
                         if (ops.ready) {
-                            var currentTime = video.currentTime,
+                            var currentTime = Math.floor(video.currentTime),
                                 duration = video.duration,
                                 pct = Math.floor((currentTime / duration) * 100),
                                 chapterSelector = ele.chapterMenu.find("[data-seconds='{seconds}']".compile({ seconds: Math.floor(currentTime) }));
@@ -5759,6 +5816,18 @@ String.prototype.compile = function (obj) {
                             if (chapterSelector.length > 0) {
                                 ele.chapterMenu.find("a.chapter").removeClass("active");
                                 chapterSelector.addClass("active");
+                            }
+
+                            //fire event
+                            var ev = o.events.filter(function (ee) {
+                                return (ee.seconds.start <= currentTime && ee.seconds.end >= currentTime);
+                            })[0];
+
+                            container.removeClass("half full three-quarter");
+
+                            if (ev) {
+                                container.addClass(ev.size);
+                                container.addClass(ev.classes);
                             }
                         }
                     });
@@ -5986,34 +6055,40 @@ String.prototype.compile = function (obj) {
     };
 })(jQuery);
 
-// $(function () {
-//     $("video").smartVideo({
-//         autoPlay: true,
-//         chapters: [{
-//                 timecode: "00:00:01",
-//                 title: "Chapter 1",
-//                 description: "Look at the pretty colors!"
-//             },
-//             {
-//                 timecode: "00:00:16",
-//                 title: "Chapter 2",
-//                 description: "Humor: Bird gets knocked out"
-//             },
-//             {
-//                 timecode: "00:00:27",
-//                 title: "Chapter 3: Title Screen",
-//                 description: "This is where the title finally shows up."
-//             }, {
-//                 timecode: "00:00:41",
-//                 title: "Chapter 4: The awakening",
-//                 description: "Our hero awakens from his slumber"
-//             },
-//             {
-//                 timecode: "00:00:56",
-//                 title: "Chapter 5: Starting the day",
-//                 description: "After a nice neck crack, Buck sets out"
-//             }
-//         ],
-//         mode: "fullscreen"
-//     });
-// });
+$(function () {
+    $("video").smartVideo({
+        autoPlay: true,
+        chapters: [{
+                timecode: "00:00:01",
+                title: "Chapter 1",
+                description: "Look at the pretty colors!"
+            },
+            {
+                timecode: "00:00:16",
+                title: "Chapter 2",
+                description: "Humor: Bird gets knocked out"
+            },
+            {
+                timecode: "00:00:27",
+                title: "Chapter 3: Title Screen",
+                description: "This is where the title finally shows up."
+            }, {
+                timecode: "00:00:41",
+                title: "Chapter 4: The awakening",
+                description: "Our hero awakens from his slumber"
+            },
+            {
+                timecode: "00:00:56",
+                title: "Chapter 5: Starting the day",
+                description: "After a nice neck crack, Buck sets out"
+            }
+        ],
+        events: [{
+            start: "00:00:05",
+            end: "00:00:10",
+            size: "half",
+            classes: ""
+        }]
+
+    });
+});

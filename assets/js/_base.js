@@ -4,19 +4,12 @@
 	An HTML5 video player with chapter abilities, iOS enhancements and finite control for the average user/dev
 */
 
-String.prototype.compile = function (obj) {
-    var str = this;
-
-    return str.replace(/[{]([^}]+)[}]/g, function (matches, p1) {
-        return obj[p1];
-    });
-};
-
 (function ($) {
     $.fn.smartVideo = function (options) {
         var o = Object.assign({
                 autoSize: true,
                 chapters: [], //array of objects structured like {seconds: CUE POINT, title: CHAPTER TITLE, description: CHAPTER DESCRIPTION, thumbnail: THUMBNAIL. SCREEN CAP USED IF NOT PROVIDED}
+                events: [], //array of objects structured like {start: BEGIN EVENT, end: END EVENT, size: HOW BIG THE CONTAINER SHOULD BE}
                 onStart: false, //call back for first play event
                 onPlay: false, //callback for play event
                 onPause: false, //callback for pause event
@@ -59,6 +52,7 @@ String.prototype.compile = function (obj) {
 
                     _this.after("<div class='control-bar'> <div class='inner'> <div class='controls'> <a class='fa fa-play' href='#'></a> <a class='fa fa-pause hide' href='#'></a> <a class='fa fa-volume-up' href='#'></a> </div> <div class='timecode'></div> <div class='progress'> <div class='inner'> <div class='bar'></div> </div> </div> </div> </div>");
                     _this.after("<div class='chapter-menu'></div>");
+                    _this.after("<div class='event_code'>WORKING</div>");
 
                     var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>",
                         controlsToggle = "<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-original-icon='fa-toggle-off' href='#'></a>";
@@ -77,7 +71,26 @@ String.prototype.compile = function (obj) {
                         timecode: container.find(".timecode")
                     };
 
+                    ops.eventsSetup();
                     ops.binds();
+                },
+
+                eventsSetup: function () {
+                    //convert event timecodes to seconds
+                    $.each(o.events, function (key, ee) {
+                        ee.seconds = {};
+                        ee.seconds.start = ops.timecodeToSeconds(ee.start);
+                        ee.seconds.end = ops.timecodeToSeconds(ee.end);
+
+                        o.events[key] = Object.assign({
+                            seconds: {}, //object of timecodes converted to seconds
+                            start: "00:00:00",
+                            end: "00:00:00",
+                            classes: "",
+                            size: "three-quarter",
+                            html: ""
+                        }, ee);
+                    });
                 },
 
                 resize: function () {
@@ -168,7 +181,7 @@ String.prototype.compile = function (obj) {
                     //event handling for progress
                     _this.on("timeupdate", function (e) {
                         if (ops.ready) {
-                            var currentTime = video.currentTime,
+                            var currentTime = Math.floor(video.currentTime),
                                 duration = video.duration,
                                 pct = Math.floor((currentTime / duration) * 100),
                                 chapterSelector = ele.chapterMenu.find("[data-seconds='{seconds}']".compile({ seconds: Math.floor(currentTime) }));
@@ -183,6 +196,18 @@ String.prototype.compile = function (obj) {
                             if (chapterSelector.length > 0) {
                                 ele.chapterMenu.find("a.chapter").removeClass("active");
                                 chapterSelector.addClass("active");
+                            }
+
+                            //fire event
+                            var ev = o.events.filter(function (ee) {
+                                return (ee.seconds.start <= currentTime && ee.seconds.end >= currentTime);
+                            })[0];
+
+                            container.removeClass("half full three-quarter");
+
+                            if (ev) {
+                                container.addClass(ev.size);
+                                container.addClass(ev.classes);
                             }
                         }
                     });

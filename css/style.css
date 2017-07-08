@@ -492,21 +492,58 @@ html {
   opacity: 0;
   display: block;
   max-height: 100vh;
+  transition: width 3s ease-in-out, opacity 0.5s ease-in-out;
 }
-/* line 35, ../assets/scss/_base.scss */
-.smart-video .loader,
-.smart-video video {
+/* line 36, ../assets/scss/_base.scss */
+.smart-video .event_code {
+  display: block;
+  width: 0;
+  transition: width 3s ease-in-out;
+}
+/* line 45, ../assets/scss/_base.scss */
+.smart-video.half .event_code,
+.smart-video.half video, .smart-video.quarter .event_code,
+.smart-video.quarter video, .smart-video.three-quarter .event_code,
+.smart-video.three-quarter video {
+  float: left;
+}
+/* line 52, ../assets/scss/_base.scss */
+.smart-video.quarter video {
+  width: 75%;
+}
+/* line 56, ../assets/scss/_base.scss */
+.smart-video.quarter .event_code {
+  width: 25%;
+}
+/* line 62, ../assets/scss/_base.scss */
+.smart-video.half video {
+  width: 50%;
+}
+/* line 66, ../assets/scss/_base.scss */
+.smart-video.half .event_code {
+  width: 50%;
+}
+/* line 72, ../assets/scss/_base.scss */
+.smart-video.three-quarter video {
+  width: 25%;
+}
+/* line 76, ../assets/scss/_base.scss */
+.smart-video.three-quarter .event_code {
+  width: 75%;
+}
+/* line 81, ../assets/scss/_base.scss */
+.smart-video .loader {
   transition: opacity 0.5s ease-in-out;
 }
-/* line 41, ../assets/scss/_base.scss */
+/* line 86, ../assets/scss/_base.scss */
 .smart-video.ready video {
   opacity: 1;
 }
-/* line 45, ../assets/scss/_base.scss */
+/* line 90, ../assets/scss/_base.scss */
 .smart-video.ready .loader {
   opacity: 0;
 }
-/* line 50, ../assets/scss/_base.scss */
+/* line 95, ../assets/scss/_base.scss */
 .smart-video .toggle {
   background-color: rgba(0, 0, 0, 0.65);
   border-radius: 5px;
@@ -516,12 +553,12 @@ html {
   z-index: 3;
   text-decoration: none;
 }
-/* line 59, ../assets/scss/_base.scss */
+/* line 104, ../assets/scss/_base.scss */
 .smart-video .toggle[data-target='.chapter-menu'] {
   top: 10px;
   left: 10px;
 }
-/* line 64, ../assets/scss/_base.scss */
+/* line 109, ../assets/scss/_base.scss */
 .smart-video .toggle[data-target='.control-bar'] {
   bottom: 2px;
   right: 0;
@@ -702,7 +739,7 @@ html {
   opacity: 1;
 }
 
-/* line 73, ../assets/scss/_base.scss */
+/* line 118, ../assets/scss/_base.scss */
 .hide {
   display: none;
 }
