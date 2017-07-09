@@ -193,6 +193,9 @@
                                 //reset event code element before applying this event's properties to it
                                 ops.ele.event_code.removeAttr("class").addClass("event_code active").addClass(ev.size).addClass(ev.position).addClass(ev.classes.join(" ")).data("id", ev_id);
                                 ops.ele.event_code.find("article").html(ev.html);
+                            } else {
+                                //if there is no event, reset event_code settings so visual effects appear correctly
+                                ops.ele.event_code.removeAttr("class").addClass("event_code");
                             }
                         }
                     });
