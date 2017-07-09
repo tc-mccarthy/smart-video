@@ -5672,7 +5672,7 @@ String.prototype.compile = function (obj) {
 
                     _this.after("<div class='control-bar'> <div class='inner'> <div class='controls'> <a class='fa fa-play' href='#'></a> <a class='fa fa-pause hide' href='#'></a> <a class='fa fa-volume-up' href='#'></a> </div> <div class='timecode'></div> <div class='progress'> <div class='inner'> <div class='bar'></div> </div> </div> </div> </div>");
                     _this.after("<div class='chapter-menu'></div>");
-                    _this.after("<div class='event_code'>WORKING</div>");
+                    _this.after("<div class='event_code'><header><a class='fa fa-close close' href='#'></a></header><article></article><footer></footer></div>");
 
                     var chapterToggle = "<a class='fa fa-list-ul toggle' data-target='.chapter-menu' data-original-icon='fa-list-ul' href='#'></a>",
                         controlsToggle = "<a class='fa fa-toggle-off toggle' data-target='.control-bar' data-original-icon='fa-toggle-off' href='#'></a>";
@@ -5681,14 +5681,15 @@ String.prototype.compile = function (obj) {
                     _this.after(controlsToggle);
 
 
-                    ele = {
+                    ops.ele = {
                         play: container.find(".fa-play"),
                         pause: container.find(".fa-pause"),
                         progressBar: container.find(".progress"),
                         progress: container.find(".progress .bar"),
                         chapterMenu: container.find(".chapter-menu"),
                         controls: container.find(".control-bar"),
-                        timecode: container.find(".timecode")
+                        timecode: container.find(".timecode"),
+                        event_code: container.find(".event_code")
                     };
 
                     ops.binds();
@@ -5708,7 +5709,7 @@ String.prototype.compile = function (obj) {
                     }
 
                     //play button bind
-                    ele.play.on("click", function (e) {
+                    ops.ele.play.on("click", function (e) {
                         e.preventDefault();
 
                         if (ops.ready) {
@@ -5717,7 +5718,7 @@ String.prototype.compile = function (obj) {
                     });
 
                     //pause button bind
-                    ele.pause.on("click", function (e) {
+                    ops.ele.pause.on("click", function (e) {
                         e.preventDefault();
 
                         if (ops.ready) {
@@ -5749,8 +5750,8 @@ String.prototype.compile = function (obj) {
 
                     //event handling for video start
                     _this.on("play playing", function (e) {
-                        ele.play.addClass("hide");
-                        ele.pause.removeClass("hide");
+                        ops.ele.play.addClass("hide");
+                        ops.ele.pause.removeClass("hide");
                         ops.playing = true;
 
                         if (!ops.started) {
@@ -5770,8 +5771,8 @@ String.prototype.compile = function (obj) {
 
                     //event handling for video pause
                     _this.on("pause", function (e) {
-                        ele.play.removeClass("hide");
-                        ele.pause.addClass("hide");
+                        ops.ele.play.removeClass("hide");
+                        ops.ele.pause.addClass("hide");
                         ops.playing = false;
 
                         if (typeof o.onPause === "function") {
@@ -5785,31 +5786,33 @@ String.prototype.compile = function (obj) {
                             var currentTime = Math.floor(video.currentTime),
                                 duration = video.duration,
                                 pct = Math.floor((currentTime / duration) * 100),
-                                chapterSelector = ele.chapterMenu.find("[data-seconds='{seconds}']".compile({ seconds: Math.floor(currentTime) }));
+                                chapterSelector = ops.ele.chapterMenu.find("[data-seconds='{seconds}']".compile({ seconds: Math.floor(currentTime) }));
 
                             //pct is floored to that updates in the progress bar aren't as sporadic
-                            ele.progress.width(pct + "%");
+                            ops.ele.progress.width(pct + "%");
 
                             //update timecode
-                            ele.timecode.text(ops.secondsToTimecode(parseInt(currentTime)));
+                            ops.ele.timecode.text(ops.secondsToTimecode(parseInt(currentTime)));
 
                             //highlight chapter
                             if (chapterSelector.length > 0) {
-                                ele.chapterMenu.find("a.chapter").removeClass("active");
+                                ops.ele.chapterMenu.find("a.chapter").removeClass("active");
                                 chapterSelector.addClass("active");
                             }
 
                             //fire event
                             var ev = o.events.filter(function (ee) {
-                                return (ee.seconds.start <= currentTime && ee.seconds.end >= currentTime);
-                            })[0];
+                                    return (ee.seconds.start <= currentTime && ee.seconds.end >= currentTime);
+                                })[0],
+                                ev_id = o.events.indexOf(ev);
 
                             //hide the popover -- this facilitates the outpoint cue
-                            $(".event_code").removeClass("active");
+                            ops.ele.event_code.removeClass("active");
 
                             if (ev) { //if there is an active event for this timecode
                                 //reset event code element before applying this event's properties to it
-                                $(".event_code").removeAttr("class").addClass("event_code active").addClass(ev.size).addClass(ev.position).addClass(ev.classes).html(ev.html);
+                                ops.ele.event_code.removeAttr("class").addClass("event_code active").addClass(ev.size).addClass(ev.position).addClass(ev.classes.join(" ")).data("id", ev_id);
+                                ops.ele.event_code.find("article").html(ev.html);
                             }
                         }
                     });
@@ -5822,7 +5825,7 @@ String.prototype.compile = function (obj) {
                     });
 
                     //seeking
-                    ele.progressBar.on("click mousedown mouseup", function (e) {
+                    ops.ele.progressBar.on("click mousedown mouseup", function (e) {
                         e.preventDefault();
 
                         //borrowed from https://stackoverflow.com/a/41953905
@@ -5855,7 +5858,7 @@ String.prototype.compile = function (obj) {
                         var ele = $(this);
 
                         $(".control-bar a.chapter.active").removeClass("active");
-                        ele.addClass("active");
+                        ops.ele.addClass("active");
                     });
 
                     $("body").on("click", ".toggle", function (e) {
@@ -5878,12 +5881,23 @@ String.prototype.compile = function (obj) {
                             break;
                         }
                     });
+
+                    $("body").on("click", ".event_code .close", function (e) {
+                        e.preventDefault();
+
+                        var ele = $(this),
+                            code = ele.closest(".event_code"),
+                            event_id = code.data("id");
+
+                        o.events[event_id].classes.push("hide");
+                        code.addClass("hide");
+                    });
                 },
 
                 toggleChapterMenu: function (op) {
                     var toggleButton = container.find("[data-target='.chapter-menu']"),
                         originalIcon = toggleButton.data("original-icon"),
-                        target = ele.chapterMenu;
+                        target = ops.ele.chapterMenu;
 
                     if (typeof op === "undefined") {
                         op = (target.hasClass('active')) ? 'hide' : 'show';
@@ -5901,7 +5915,7 @@ String.prototype.compile = function (obj) {
                 toggleControls: function (op) {
                     var toggleButton = container.find("[data-target='.control-bar']"),
                         originalIcon = toggleButton.data("original-icon"),
-                        target = ele.controls;
+                        target = ops.ele.controls;
 
                     if (typeof op === "undefined") {
                         op = (target.hasClass('active')) ? 'hide' : 'show';
@@ -5992,7 +6006,7 @@ String.prototype.compile = function (obj) {
                             seconds: {}, //object of timecodes converted to seconds
                             start: "00:00:00",
                             end: "00:00:00",
-                            classes: "",
+                            classes: [],
                             size: "quarter",
                             html: "",
                             position: "right"
@@ -6002,7 +6016,7 @@ String.prototype.compile = function (obj) {
                             length = ee.seconds.end - ee.seconds.start,
                             width = Math.floor((length / duration) * 100);
 
-                        ele.progressBar.find(".inner").append("<a class='video_event' style='left: {pct}%; width: {width}%;' href='#'></a>".compile({ pct: pct, width: width }));
+                        ops.ele.progressBar.find(".inner").append("<a class='video_event' style='left: {pct}%; width: {width}%;' href='#'></a>".compile({ pct: pct, width: width }));
                     });
 
                     //set up chapter markers
@@ -6011,14 +6025,14 @@ String.prototype.compile = function (obj) {
 
                         var pct = Math.floor((chapter.seconds / duration) * 100),
                             setThumbnail = function (thumbnail) {
-                                ele.progressBar.find(".inner").append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
+                                ops.ele.progressBar.find(".inner").append("<a class='chapter' style='left: {pct}%' data-seconds='{seconds}'><div class='preview'><img src='{thumbnail}' /></div></a>".compile({ pct: pct, seconds: chapter.seconds, thumbnail: thumbnail }));
                                 chapterMenuEntry.attr("data-seconds", chapter.seconds).html("<div class='preview'><img src='{thumbnail}' /></div><div class='headline'>{title}</div><div class='description'>{desc}</div>".compile({ seconds: chapter.seconds, thumbnail: thumbnail, title: chapter.title, desc: chapter.description }));
                                 nextChapter();
                             };
 
-                        ele.chapterMenu.append("<a class='chapter' href='#'></a>");
+                        ops.ele.chapterMenu.append("<a class='chapter' href='#'></a>");
 
-                        var chapterMenuEntry = ele.chapterMenu.find(".chapter").eq(-1);
+                        var chapterMenuEntry = ops.ele.chapterMenu.find(".chapter").eq(-1);
 
                         if (!chapter.thumbnail) {
                             ops.getFrame(chapter.seconds, setThumbnail);
@@ -6059,79 +6073,73 @@ String.prototype.compile = function (obj) {
     };
 })(jQuery);
 
-// $(function () {
-//     $("video").smartVideo({
-//         autoPlay: true,
-//         chapters: [{
-//                 timecode: "00:00:01",
-//                 title: "Chapter 1",
-//                 description: "Look at the pretty colors!"
-//             },
-//             {
-//                 timecode: "00:00:16",
-//                 title: "Chapter 2",
-//                 description: "Humor: Bird gets knocked out"
-//             },
-//             {
-//                 timecode: "00:00:27",
-//                 title: "Chapter 3: Title Screen",
-//                 description: "This is where the title finally shows up."
-//             }, {
-//                 timecode: "00:00:41",
-//                 title: "Chapter 4: The awakening",
-//                 description: "Our hero awakens from his slumber"
-//             },
-//             {
-//                 timecode: "00:00:56",
-//                 title: "Chapter 5: Starting the day",
-//                 description: "After a nice neck crack, Buck sets out"
-//             }
-//         ],
-// events: [{
-//         start: "00:00:05",
-//         end: "00:00:10",
-//         size: "quarter",
-//         classes: "",
-//         html: "<h2>Open video project</h2><p>Big Buck Bunny is the lorem ipsum of HTML5 videos, being produced for purposes just like this one.</p>",
-//         position: "left"
-//     }, {
-//         start: "00:00:22",
-//         end: "00:00:30",
-//         size: "quarter",
-//         classes: "",
-//         html: "<p>HTML5 video requires that all videos be transcoded into three types, ogg, webm and mp4. Currently there is no standard, though mp4 is useable by all browsers.</p>",
-//         position: "right"
-//     }, {
-//         start: "00:00:40",
-//         end: "00:00:45",
-//         size: "quarter",
-//         classes: "",
-//         html: "<h2>Smart video limits</h2><p>Right now, these popups can take ANY html we throw at it -- though we're testing to find the limit.</p>",
-//         position: "left"
-//     }, {
-//         start: "00:00:50",
-//         end: "00:00:53",
-//         size: "quarter",
-//         classes: "",
-//         html: "<p>These popups come in three sizes: this size is called 'quarter'",
-//         position: "left"
-//     }, {
-//         start: "00:00:53",
-//         end: "00:00:56",
-//         size: "half",
-//         classes: "",
-//         html: "<p>This size is 'half'",
-//         position: "right"
-//     },
-//     {
-//         start: "00:00:56",
-//         end: "00:00:59",
-//         size: "three-quarter",
-//         classes: "",
-//         html: "<p>And finally, three-quarter",
-//         position: "left"
-//     }
-// ]
-//
-//     });
-// });
+$(function () {
+    $("video").smartVideo({
+        autoPlay: true,
+        chapters: [{
+                timecode: "00:00:01",
+                title: "Chapter 1",
+                description: "Look at the pretty colors!"
+            },
+            {
+                timecode: "00:00:16",
+                title: "Chapter 2",
+                description: "Humor: Bird gets knocked out"
+            },
+            {
+                timecode: "00:00:27",
+                title: "Chapter 3: Title Screen",
+                description: "This is where the title finally shows up."
+            }, {
+                timecode: "00:00:41",
+                title: "Chapter 4: The awakening",
+                description: "Our hero awakens from his slumber"
+            },
+            {
+                timecode: "00:00:56",
+                title: "Chapter 5: Starting the day",
+                description: "After a nice neck crack, Buck sets out"
+            }
+        ],
+        events: [{
+                start: "00:00:05",
+                end: "00:00:10",
+                size: "quarter",
+                html: "<h2>Open video project</h2><p>Big Buck Bunny is the lorem ipsum of HTML5 videos, being produced for purposes just like this one.</p>",
+                position: "left"
+            }, {
+                start: "00:00:22",
+                end: "00:00:30",
+                size: "quarter",
+                html: "<p>HTML5 video requires that all videos be transcoded into three types, ogg, webm and mp4. Currently there is no standard, though mp4 is useable by all browsers.</p>",
+                position: "right"
+            }, {
+                start: "00:00:40",
+                end: "00:00:45",
+                size: "quarter",
+                html: "<h2>Smart video limits</h2><p>Right now, these popups can take ANY html we throw at it -- though we're testing to find the limit.</p>",
+                position: "left"
+            }, {
+                start: "00:00:50",
+                end: "00:00:53",
+                size: "quarter",
+                html: "<p>These popups come in three sizes: this size is called 'quarter'",
+                position: "left"
+            }, {
+                start: "00:00:53",
+                end: "00:00:56",
+                size: "half",
+                html: "<p>This size is 'half'",
+                position: "right"
+            },
+            {
+                start: "00:00:56",
+                end: "00:00:59",
+                size: "three-quarter",
+                html: "<p>And finally, three-quarter",
+                position: "left"
+            }
+        ]
+
+    });
+});

@@ -47,4 +47,14 @@
     &.three-quarter {
         width: 75%;
     }
+
+    header {
+        text-align: right;
+        font-size : 1.5em;
+
+        a {
+            color          : $white;
+            text-decoration: none;
+        }
+    }
 }

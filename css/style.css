@@ -770,6 +770,16 @@ html {
 .smart-video .event_code.three-quarter {
   width: 75%;
 }
+/* line 51, ../assets/scss/_popUps.scss */
+.smart-video .event_code header {
+  text-align: right;
+  font-size: 1.5em;
+}
+/* line 55, ../assets/scss/_popUps.scss */
+.smart-video .event_code header a {
+  color: #FFF;
+  text-decoration: none;
+}
 
 /* line 81, ../assets/scss/_base.scss */
 .hide {
