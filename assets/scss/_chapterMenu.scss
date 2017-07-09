@@ -9,6 +9,7 @@
     pointer-events  : none;
     transition      : opacity 0.5s ease-in-out;
     width           : 100%;
+    z-index         : 0;
     @media(min-width: $desktopBP) {
         width: 320px;
     }
@@ -16,6 +17,7 @@
     &.active {
         pointer-events: all;
         opacity       : 1;
+        z-index       : 1;
     }
 
     a {

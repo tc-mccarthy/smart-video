@@ -1,0 +1,50 @@
+.event_code {
+    opacity         : 0;
+    transition      : opacity 1s ease-in-out;
+    position        : absolute;
+    top             : 0;
+    background-color: $translucent_black;
+    color           : $white;
+    height          : 100%;
+    margin          : 0;
+    padding         : 1em;
+    z-index         : 0;
+
+    p {
+        color: $white;
+    }
+
+    &.light {
+        background-color: $translucent_white;
+        color           : $black;
+
+        p {
+            color: $black;
+        }
+    }
+
+    &.right {
+        right: 0;
+    }
+
+    &.left {
+        left: 0;
+    }
+
+    &.active {
+        opacity: 1;
+        z-index: 1;
+    }
+
+    &.quarter {
+        width: 25%;
+    }
+
+    &.half {
+        width: 50%;
+    }
+
+    &.three-quarter {
+        width: 75%;
+    }
+}

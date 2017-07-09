@@ -471,14 +471,15 @@ html {
   background-color: #000;
   color: #FFF;
   position: relative;
+  overflow: hidden;
 }
-/* line 17, ../assets/scss/_base.scss */
+/* line 18, ../assets/scss/_base.scss */
 .smart-video:after {
   content: "";
   clear: both;
   display: table;
 }
-/* line 23, ../assets/scss/_base.scss */
+/* line 24, ../assets/scss/_base.scss */
 .smart-video .loader {
   font-size: 3em;
   position: absolute;
@@ -487,12 +488,12 @@ html {
   left: 50%;
 }
 @media (min-width: 769px) {
-  /* line 23, ../assets/scss/_base.scss */
+  /* line 24, ../assets/scss/_base.scss */
   .smart-video .loader {
     font-size: 7em;
   }
 }
-/* line 34, ../assets/scss/_base.scss */
+/* line 35, ../assets/scss/_base.scss */
 .smart-video video {
   width: 100%;
   opacity: 0;
@@ -500,55 +501,19 @@ html {
   max-height: 100vh;
   transition: width 1s ease-in-out, opacity 0.5s ease-in-out;
 }
-/* line 42, ../assets/scss/_base.scss */
-.smart-video .event_code {
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  position: absolute;
-  top: 0;
-  background-color: rgba(0, 0, 0, 0.65);
-  height: 100%;
-  padding: 1em;
-  z-index: 0;
-}
-/* line 52, ../assets/scss/_base.scss */
-.smart-video .event_code.right {
-  right: 0;
-}
-/* line 56, ../assets/scss/_base.scss */
-.smart-video .event_code.left {
-  left: 0;
-}
-/* line 60, ../assets/scss/_base.scss */
-.smart-video .event_code.active {
-  opacity: 1;
-  z-index: 3;
-}
-/* line 65, ../assets/scss/_base.scss */
-.smart-video .event_code.quarter {
-  width: 25%;
-}
-/* line 69, ../assets/scss/_base.scss */
-.smart-video .event_code.half {
-  width: 50%;
-}
-/* line 73, ../assets/scss/_base.scss */
-.smart-video .event_code.three-quarter {
-  width: 75%;
-}
-/* line 78, ../assets/scss/_base.scss */
+/* line 43, ../assets/scss/_base.scss */
 .smart-video .loader {
   transition: opacity 0.5s ease-in-out;
 }
-/* line 83, ../assets/scss/_base.scss */
+/* line 48, ../assets/scss/_base.scss */
 .smart-video.ready video {
   opacity: 1;
 }
-/* line 87, ../assets/scss/_base.scss */
+/* line 52, ../assets/scss/_base.scss */
 .smart-video.ready .loader {
   opacity: 0;
 }
-/* line 92, ../assets/scss/_base.scss */
+/* line 57, ../assets/scss/_base.scss */
 .smart-video .toggle {
   background-color: rgba(0, 0, 0, 0.65);
   border-radius: 5px;
@@ -558,12 +523,12 @@ html {
   z-index: 3;
   text-decoration: none;
 }
-/* line 101, ../assets/scss/_base.scss */
+/* line 66, ../assets/scss/_base.scss */
 .smart-video .toggle[data-target='.chapter-menu'] {
   top: 10px;
   left: 10px;
 }
-/* line 106, ../assets/scss/_base.scss */
+/* line 71, ../assets/scss/_base.scss */
 .smart-video .toggle[data-target='.control-bar'] {
   bottom: 2px;
   right: 0;
@@ -580,6 +545,7 @@ html {
   pointer-events: none;
   transition: opacity 0.5s ease-in-out;
   width: 100%;
+  z-index: 0;
 }
 @media (min-width: 769px) {
   /* line 1, ../assets/scss/_chapterMenu.scss */
@@ -587,52 +553,53 @@ html {
     width: 320px;
   }
 }
-/* line 16, ../assets/scss/_chapterMenu.scss */
+/* line 17, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu.active {
   pointer-events: all;
   opacity: 1;
+  z-index: 1;
 }
-/* line 21, ../assets/scss/_chapterMenu.scss */
+/* line 23, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu a {
   text-decoration: none;
   color: #FFF;
 }
-/* line 25, ../assets/scss/_chapterMenu.scss */
+/* line 27, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu a.chapter {
   display: block;
   border-bottom: 1px solid rgba(0, 0, 0, 0.65);
 }
-/* line 29, ../assets/scss/_chapterMenu.scss */
+/* line 31, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu a.chapter:last-child {
   border-bottom: 0;
 }
-/* line 33, ../assets/scss/_chapterMenu.scss */
+/* line 35, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu a.chapter.active {
   background-color: rgba(255, 255, 255, 0.65);
   color: #000;
 }
-/* line 40, ../assets/scss/_chapterMenu.scss */
+/* line 42, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu .headline,
 .smart-video .chapter-menu .preview {
   padding: 0.5em;
   float: left;
 }
-/* line 45, ../assets/scss/_chapterMenu.scss */
+/* line 47, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu .headline img,
 .smart-video .chapter-menu .preview img {
   width: 100%;
 }
-/* line 50, ../assets/scss/_chapterMenu.scss */
+/* line 52, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu .headline {
   width: 55%;
   font-size: 1.5em;
 }
-/* line 55, ../assets/scss/_chapterMenu.scss */
+/* line 57, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu .preview {
   width: 45%;
   font-size: 1.2em;
 }
-/* line 60, ../assets/scss/_chapterMenu.scss */
+/* line 62, ../assets/scss/_chapterMenu.scss */
 .smart-video .chapter-menu .description {
   padding: 1em;
   clear: both;
@@ -648,23 +615,25 @@ html {
   pointer-events: none;
   background-color: rgba(0, 0, 0, 0.65);
   font-size: 0.9em;
+  z-index: 0;
 }
-/* line 14, ../assets/scss/_controlBar.scss */
+/* line 15, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar.active {
   opacity: 1;
   pointer-events: all;
+  z-index: 2;
 }
-/* line 19, ../assets/scss/_controlBar.scss */
+/* line 21, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .inner {
   position: relative;
   height: 100%;
 }
-/* line 24, ../assets/scss/_controlBar.scss */
+/* line 26, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar a {
   color: #FFF;
   text-decoration: none;
 }
-/* line 29, ../assets/scss/_controlBar.scss */
+/* line 31, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .controls,
 .smart-video .control-bar .fullscreen,
 .smart-video .control-bar .progress,
@@ -675,7 +644,7 @@ html {
   padding: 0.2em 0.5em;
   vertical-align: top;
 }
-/* line 39, ../assets/scss/_controlBar.scss */
+/* line 41, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .controls .fa-volume-up,
 .smart-video .control-bar .fullscreen .fa-volume-up,
 .smart-video .control-bar .progress .fa-volume-up,
@@ -683,7 +652,7 @@ html {
   display: none;
 }
 @media (min-width: 769px) {
-  /* line 39, ../assets/scss/_controlBar.scss */
+  /* line 41, ../assets/scss/_controlBar.scss */
   .smart-video .control-bar .controls .fa-volume-up,
   .smart-video .control-bar .fullscreen .fa-volume-up,
   .smart-video .control-bar .progress .fa-volume-up,
@@ -691,39 +660,39 @@ html {
     display: inline-block;
   }
 }
-/* line 47, ../assets/scss/_controlBar.scss */
+/* line 49, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .controls {
   width: 5%;
 }
-/* line 51, ../assets/scss/_controlBar.scss */
+/* line 53, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .timecode {
   width: 20%;
 }
-/* line 55, ../assets/scss/_controlBar.scss */
+/* line 57, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress {
   width: 55%;
   padding: 0;
 }
 @media (min-width: 769px) {
-  /* line 55, ../assets/scss/_controlBar.scss */
+  /* line 57, ../assets/scss/_controlBar.scss */
   .smart-video .control-bar .progress {
     width: 70%;
   }
 }
-/* line 62, ../assets/scss/_controlBar.scss */
+/* line 64, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .bar {
   background-color: #FFF;
   height: 100%;
   position: absolute;
 }
-/* line 68, ../assets/scss/_controlBar.scss */
+/* line 70, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .video_event {
   position: absolute;
   top: 0;
   background-color: blue;
   height: 100%;
 }
-/* line 75, ../assets/scss/_controlBar.scss */
+/* line 77, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter {
   position: absolute;
   top: 0;
@@ -731,7 +700,7 @@ html {
   background-color: yellow;
   height: 100%;
 }
-/* line 82, ../assets/scss/_controlBar.scss */
+/* line 84, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter .preview {
   width: 100px;
   background-color: rgba(0, 0, 0, 0.65);
@@ -742,16 +711,67 @@ html {
   left: -50px;
   opacity: 0;
 }
-/* line 92, ../assets/scss/_controlBar.scss */
+/* line 94, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter .preview img {
   width: 100%;
 }
-/* line 98, ../assets/scss/_controlBar.scss */
+/* line 100, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter:hover .preview {
   opacity: 1;
 }
+/* line 1, ../assets/scss/_popUps.scss */
+.smart-video .event_code {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  position: absolute;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #FFF;
+  height: 100%;
+  margin: 0;
+  padding: 1em;
+  z-index: 0;
+}
+/* line 13, ../assets/scss/_popUps.scss */
+.smart-video .event_code p {
+  color: #FFF;
+}
+/* line 17, ../assets/scss/_popUps.scss */
+.smart-video .event_code.light {
+  background-color: rgba(255, 255, 255, 0.65);
+  color: #000;
+}
+/* line 21, ../assets/scss/_popUps.scss */
+.smart-video .event_code.light p {
+  color: #000;
+}
+/* line 26, ../assets/scss/_popUps.scss */
+.smart-video .event_code.right {
+  right: 0;
+}
+/* line 30, ../assets/scss/_popUps.scss */
+.smart-video .event_code.left {
+  left: 0;
+}
+/* line 34, ../assets/scss/_popUps.scss */
+.smart-video .event_code.active {
+  opacity: 1;
+  z-index: 1;
+}
+/* line 39, ../assets/scss/_popUps.scss */
+.smart-video .event_code.quarter {
+  width: 25%;
+}
+/* line 43, ../assets/scss/_popUps.scss */
+.smart-video .event_code.half {
+  width: 50%;
+}
+/* line 47, ../assets/scss/_popUps.scss */
+.smart-video .event_code.three-quarter {
+  width: 75%;
+}
 
-/* line 115, ../assets/scss/_base.scss */
+/* line 81, ../assets/scss/_base.scss */
 .hide {
   display: none;
 }
