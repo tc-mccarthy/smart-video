@@ -27,11 +27,50 @@ $(function () {
             }
         ],
         events: [{
-            start: "00:00:05",
-            end: "00:00:10",
-            size: "half",
-            classes: ""
-        }]
+                start: "00:00:05",
+                end: "00:00:10",
+                size: "quarter",
+                classes: "",
+                html: "<h2>Open video project</h2><p>Big Buck Bunny is the lorem ipsum of HTML5 videos, being produced for purposes just like this one.</p>",
+                position: "left"
+            }, {
+                start: "00:00:22",
+                end: "00:00:30",
+                size: "quarter",
+                classes: "",
+                html: "<p>HTML5 video requires that all videos be transcoded into three types, ogg, webm and mp4. Currently there is no standard, though mp4 is useable by all browsers.</p>",
+                position: "right"
+            }, {
+                start: "00:00:40",
+                end: "00:00:45",
+                size: "quarter",
+                classes: "",
+                html: "<h2>Smart video limits</h2><p>Right now, these popups can take ANY html we throw at it -- though we're testing to find the limit.</p>",
+                position: "left"
+            }, {
+                start: "00:00:50",
+                end: "00:00:53",
+                size: "quarter",
+                classes: "",
+                html: "<p>These popups come in three sizes: this size is called 'quarter'",
+                position: "left"
+            }, {
+                start: "00:00:53",
+                end: "00:00:56",
+                size: "half",
+                classes: "",
+                html: "<p>This size is 'half'",
+                position: "right"
+            },
+            {
+                start: "00:00:56",
+                end: "00:00:59",
+                size: "three-quarter",
+                classes: "",
+                html: "<p>And finally, three-quarter",
+                position: "left"
+            }
+        ]
 
     });
 });

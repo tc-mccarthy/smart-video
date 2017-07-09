@@ -65,6 +65,13 @@ $controlBarHeight: 20px;
             position        : absolute;
         }
 
+        .video_event {
+            position        : absolute;
+            top             : 0;
+            background-color: $blue;
+            height          : 100%;
+        }
+
         .chapter {
             position        : absolute;
             top             : 0;

@@ -14,6 +14,12 @@ html {
 	color           : $white;
 	position        : relative;
 
+	&:after {
+		content: "";
+		clear  : both;
+		display: table;
+	}
+
 	.loader {
 		font-size: 3em;
 		position : absolute;
@@ -30,50 +36,41 @@ html {
 		opacity   : 0;
 		display   : block;
 		max-height: 100vh;
-		transition: width 3s ease-in-out, opacity 0.5s ease-in-out;
+		transition: width 1s ease-in-out, opacity 0.5s ease-in-out;
 	}
 
 	.event_code {
-		display   : block;
-		width     : 0;
-		transition: width 3s ease-in-out;
-	}
+		opacity         : 0;
+		transition      : opacity 1s ease-in-out;
+		position        : absolute;
+		top             : 0;
+		background-color: $translucent_black;
+		height          : 100%;
+		padding         : 1em;
+		z-index         : 0;
 
-	&.half,
-	&.quarter,
-	&.three-quarter {
-		.event_code,
-		video {
-			float: left;
-		}
-	}
-
-	&.quarter {
-		video {
-			width: 75%;
+		&.right {
+			right: 0;
 		}
 
-		.event_code {
-			width: 25%;
-		}
-	}
-
-	&.half {
-		video {
-			width: 50%;
+		&.left {
+			left: 0;
 		}
 
-		.event_code {
-			width: 50%;
+		&.active {
+			opacity: 1;
+			z-index: 3;
 		}
-	}
 
-	&.three-quarter {
-		video {
+		&.quarter {
 			width: 25%;
 		}
 
-		.event_code {
+		&.half {
+			width: 50%;
+		}
+
+		&.three-quarter {
 			width: 75%;
 		}
 	}

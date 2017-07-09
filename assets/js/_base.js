@@ -71,26 +71,7 @@
                         timecode: container.find(".timecode")
                     };
 
-                    ops.eventsSetup();
                     ops.binds();
-                },
-
-                eventsSetup: function () {
-                    //convert event timecodes to seconds
-                    $.each(o.events, function (key, ee) {
-                        ee.seconds = {};
-                        ee.seconds.start = ops.timecodeToSeconds(ee.start);
-                        ee.seconds.end = ops.timecodeToSeconds(ee.end);
-
-                        o.events[key] = Object.assign({
-                            seconds: {}, //object of timecodes converted to seconds
-                            start: "00:00:00",
-                            end: "00:00:00",
-                            classes: "",
-                            size: "three-quarter",
-                            html: ""
-                        }, ee);
-                    });
                 },
 
                 resize: function () {
@@ -203,11 +184,12 @@
                                 return (ee.seconds.start <= currentTime && ee.seconds.end >= currentTime);
                             })[0];
 
-                            container.removeClass("half full three-quarter");
+                            //hide the popover -- this facilitates the outpoint cue
+                            $(".event_code").removeClass("active");
 
-                            if (ev) {
-                                container.addClass(ev.size);
-                                container.addClass(ev.classes);
+                            if (ev) { //if there is an active event for this timecode
+                                //reset event code element before applying this event's properties to it
+                                $(".event_code").removeAttr("class").addClass("event_code active").addClass(ev.size).addClass(ev.position).addClass(ev.classes).html(ev.html);
                             }
                         }
                     });
@@ -380,8 +362,30 @@
                     var wait = 0,
                         duration = video.duration;
 
-                    //set up chapter markers
+                    //set up event markers
+                    $.each(o.events, function (key, ee) {
+                        ee.seconds = {};
+                        ee.seconds.start = ops.timecodeToSeconds(ee.start);
+                        ee.seconds.end = ops.timecodeToSeconds(ee.end);
 
+                        o.events[key] = Object.assign({
+                            seconds: {}, //object of timecodes converted to seconds
+                            start: "00:00:00",
+                            end: "00:00:00",
+                            classes: "",
+                            size: "quarter",
+                            html: "",
+                            position: "right"
+                        }, ee);
+
+                        var pct = Math.floor((ee.seconds.start / duration) * 100),
+                            length = ee.seconds.end - ee.seconds.start,
+                            width = Math.floor((length / duration) * 100);
+
+                        ele.progressBar.find(".inner").append("<a class='video_event' style='left: {pct}%; width: {width}%;' href='#'></a>".compile({ pct: pct, width: width }));
+                    });
+
+                    //set up chapter markers
                     async.eachSeries(o.chapters, function (chapter, nextChapter) {
                         chapter.seconds = ops.timecodeToSeconds(chapter.timecode);
 

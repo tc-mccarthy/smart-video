@@ -5691,26 +5691,7 @@ String.prototype.compile = function (obj) {
                         timecode: container.find(".timecode")
                     };
 
-                    ops.eventsSetup();
                     ops.binds();
-                },
-
-                eventsSetup: function () {
-                    //convert event timecodes to seconds
-                    $.each(o.events, function (key, ee) {
-                        ee.seconds = {};
-                        ee.seconds.start = ops.timecodeToSeconds(ee.start);
-                        ee.seconds.end = ops.timecodeToSeconds(ee.end);
-
-                        o.events[key] = Object.assign({
-                            seconds: {}, //object of timecodes converted to seconds
-                            start: "00:00:00",
-                            end: "00:00:00",
-                            classes: "",
-                            size: "three-quarter",
-                            html: ""
-                        }, ee);
-                    });
                 },
 
                 resize: function () {
@@ -5823,11 +5804,12 @@ String.prototype.compile = function (obj) {
                                 return (ee.seconds.start <= currentTime && ee.seconds.end >= currentTime);
                             })[0];
 
-                            container.removeClass("half full three-quarter");
+                            //hide the popover -- this facilitates the outpoint cue
+                            $(".event_code").removeClass("active");
 
-                            if (ev) {
-                                container.addClass(ev.size);
-                                container.addClass(ev.classes);
+                            if (ev) { //if there is an active event for this timecode
+                                //reset event code element before applying this event's properties to it
+                                $(".event_code").removeAttr("class").addClass("event_code active").addClass(ev.size).addClass(ev.position).addClass(ev.classes).html(ev.html);
                             }
                         }
                     });
@@ -6000,8 +5982,30 @@ String.prototype.compile = function (obj) {
                     var wait = 0,
                         duration = video.duration;
 
-                    //set up chapter markers
+                    //set up event markers
+                    $.each(o.events, function (key, ee) {
+                        ee.seconds = {};
+                        ee.seconds.start = ops.timecodeToSeconds(ee.start);
+                        ee.seconds.end = ops.timecodeToSeconds(ee.end);
 
+                        o.events[key] = Object.assign({
+                            seconds: {}, //object of timecodes converted to seconds
+                            start: "00:00:00",
+                            end: "00:00:00",
+                            classes: "",
+                            size: "quarter",
+                            html: "",
+                            position: "right"
+                        }, ee);
+
+                        var pct = Math.floor((ee.seconds.start / duration) * 100),
+                            length = ee.seconds.end - ee.seconds.start,
+                            width = Math.floor((length / duration) * 100);
+
+                        ele.progressBar.find(".inner").append("<a class='video_event' style='left: {pct}%; width: {width}%;' href='#'></a>".compile({ pct: pct, width: width }));
+                    });
+
+                    //set up chapter markers
                     async.eachSeries(o.chapters, function (chapter, nextChapter) {
                         chapter.seconds = ops.timecodeToSeconds(chapter.timecode);
 
@@ -6084,11 +6088,50 @@ $(function () {
             }
         ],
         events: [{
-            start: "00:00:05",
-            end: "00:00:10",
-            size: "half",
-            classes: ""
-        }]
+                start: "00:00:05",
+                end: "00:00:10",
+                size: "quarter",
+                classes: "",
+                html: "<h2>Open video project</h2><p>Big Buck Bunny is the lorem ipsum of HTML5 videos, being produced for purposes just like this one.</p>",
+                position: "left"
+            }, {
+                start: "00:00:22",
+                end: "00:00:30",
+                size: "quarter",
+                classes: "",
+                html: "<p>HTML5 video requires that all videos be transcoded into three types, ogg, webm and mp4. Currently there is no standard, though mp4 is useable by all browsers.</p>",
+                position: "right"
+            }, {
+                start: "00:00:40",
+                end: "00:00:45",
+                size: "quarter",
+                classes: "",
+                html: "<h2>Smart video limits</h2><p>Right now, these popups can take ANY html we throw at it -- though we're testing to find the limit.</p>",
+                position: "left"
+            }, {
+                start: "00:00:50",
+                end: "00:00:53",
+                size: "quarter",
+                classes: "",
+                html: "<p>These popups come in three sizes: this size is called 'quarter'",
+                position: "left"
+            }, {
+                start: "00:00:53",
+                end: "00:00:56",
+                size: "half",
+                classes: "",
+                html: "<p>This size is 'half'",
+                position: "right"
+            },
+            {
+                start: "00:00:56",
+                end: "00:00:59",
+                size: "three-quarter",
+                classes: "",
+                html: "<p>And finally, three-quarter",
+                position: "left"
+            }
+        ]
 
     });
 });
