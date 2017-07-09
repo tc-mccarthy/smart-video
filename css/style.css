@@ -780,6 +780,10 @@ html {
   color: #FFF;
   text-decoration: none;
 }
+/* line 61, ../assets/scss/_popUps.scss */
+.smart-video .event_code article {
+  background: transparent;
+}
 
 /* line 81, ../assets/scss/_base.scss */
 .hide {
