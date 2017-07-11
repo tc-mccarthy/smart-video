@@ -672,6 +672,7 @@ html {
 .smart-video .control-bar .progress {
   width: 55%;
   padding: 0;
+  background-color: rgba(255, 255, 255, 0.65);
 }
 @media (min-width: 769px) {
   /* line 57, ../assets/scss/_controlBar.scss */
@@ -679,28 +680,32 @@ html {
     width: 70%;
   }
 }
-/* line 64, ../assets/scss/_controlBar.scss */
+/* line 65, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .bar {
   background-color: #FFF;
   height: 100%;
   position: absolute;
 }
-/* line 70, ../assets/scss/_controlBar.scss */
+/* line 71, ../assets/scss/_controlBar.scss */
+.smart-video .control-bar .progress .chapter,
+.smart-video .control-bar .progress .video_event {
+  width: 3px;
+}
+/* line 76, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .video_event {
   position: absolute;
   top: 0;
   background-color: blue;
   height: 100%;
 }
-/* line 77, ../assets/scss/_controlBar.scss */
+/* line 83, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter {
   position: absolute;
   top: 0;
-  width: 5px;
   background-color: yellow;
   height: 100%;
 }
-/* line 84, ../assets/scss/_controlBar.scss */
+/* line 89, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter .preview {
   width: 100px;
   background-color: rgba(0, 0, 0, 0.65);
@@ -711,11 +716,11 @@ html {
   left: -50px;
   opacity: 0;
 }
-/* line 94, ../assets/scss/_controlBar.scss */
+/* line 99, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter .preview img {
   width: 100%;
 }
-/* line 100, ../assets/scss/_controlBar.scss */
+/* line 105, ../assets/scss/_controlBar.scss */
 .smart-video .control-bar .progress .chapter:hover .preview {
   opacity: 1;
 }

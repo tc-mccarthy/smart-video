@@ -55,8 +55,9 @@ $controlBarHeight: 20px;
     }
 
     .progress {
-        width  : 55%;
-        padding: 0;
+        width           : 55%;
+        padding         : 0;
+        background-color: $translucent_white;
         @media(min-width: $desktopBP) {
             width: 70%;
         }
@@ -65,6 +66,11 @@ $controlBarHeight: 20px;
             background-color: $white;
             height          : 100%;
             position        : absolute;
+        }
+
+        .chapter,
+        .video_event {
+            width: 3px;
         }
 
         .video_event {
@@ -77,7 +83,6 @@ $controlBarHeight: 20px;
         .chapter {
             position        : absolute;
             top             : 0;
-            width           : 5px;
             background-color: $yellow;
             height          : 100%;
 

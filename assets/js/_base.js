@@ -395,11 +395,9 @@
                             position: "right"
                         }, ee);
 
-                        var pct = Math.floor((ee.seconds.start / duration) * 100),
-                            length = ee.seconds.end - ee.seconds.start,
-                            width = Math.floor((length / duration) * 100);
+                        var pct = Math.floor((ee.seconds.start / duration) * 100);
 
-                        ops.ele.progressBar.find(".inner").append("<a class='video_event' style='left: {pct}%; width: {width}%;' href='#'></a>".compile({ pct: pct, width: width }));
+                        ops.ele.progressBar.find(".inner").append("<a class='video_event' style='left: {pct}%;' href='#'></a>".compile({ pct: pct }));
                     });
 
                     //set up chapter markers
